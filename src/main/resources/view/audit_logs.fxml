@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.smartkyc.controller.AuditLogsController"
+      spacing="16" style="-fx-padding:24;">
+    <HBox spacing="12" alignment="CENTER_LEFT" styleClass="card">
+        <TextField fx:id="searchField" promptText="Search audit description..." styleClass="text-input" prefWidth="250" id="logs-search-input"/>
+        <Label text="Module:" styleClass="form-label"/>
+        <ComboBox fx:id="moduleFilter" styleClass="combo-box" id="logs-module-filter"/>
+        <Label text="Action:" styleClass="form-label"/>
+        <ComboBox fx:id="actionFilter" styleClass="combo-box" id="logs-action-filter"/>
+        <Button text="Filter" onAction="#handleSearch" styleClass="btn-primary" id="logs-filter-btn"/>
+        <Button text="Reset" onAction="#handleClearSearch" styleClass="btn-secondary" id="logs-reset-btn"/>
+    </HBox>
+    <TableView fx:id="logsTable" VBox.vgrow="ALWAYS" styleClass="table-view" id="logs-table">
+        <columns>
+            <TableColumn fx:id="userCol" text="User" prefWidth="120"/>
+            <TableColumn fx:id="moduleCol" text="Module" prefWidth="150"/>
+            <TableColumn fx:id="actionCol" text="Action" prefWidth="180"/>
+            <TableColumn fx:id="descCol" text="Description" prefWidth="450"/>
+            <TableColumn fx:id="timeCol" text="Timestamp" prefWidth="180"/>
+        </columns>
+    </TableView>
+</VBox>

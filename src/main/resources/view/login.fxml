@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.smartkyc.controller.LoginController"
+      styleClass="login-bg" alignment="CENTER" spacing="0">
+    <VBox styleClass="login-card" alignment="CENTER" spacing="20" maxWidth="400" minWidth="380">
+        <Label text="🔐 SmartKYC" styleClass="login-title"/>
+        <Label text="PAN &amp; Aadhaar Validation System" styleClass="login-subtitle"/>
+        <VBox spacing="8">
+            <Label text="Username" styleClass="form-label"/>
+            <TextField fx:id="usernameField" promptText="Enter your username" styleClass="text-input" id="login-username"/>
+        </VBox>
+        <VBox spacing="8">
+            <Label text="Password" styleClass="form-label"/>
+            <PasswordField fx:id="passwordField" promptText="Enter your password" styleClass="text-input" id="login-password"/>
+        </VBox>
+        <Label fx:id="errorLabel" styleClass="error-label" wrapText="true"/>
+        <Button text="Sign In" onAction="#handleLogin" styleClass="btn-primary" maxWidth="Infinity" id="login-btn"/>
+        <Label text="Default: admin / admin123" styleClass="hint-label"/>
+    </VBox>
+</VBox>

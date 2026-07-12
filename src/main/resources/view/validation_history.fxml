@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.smartkyc.controller.ValidationHistoryController"
+      spacing="16" style="-fx-padding:24;">
+    <HBox spacing="12" alignment="CENTER_LEFT" styleClass="card">
+        <TextField fx:id="searchField" promptText="Search document number..." styleClass="text-input" prefWidth="250" id="history-search-input"/>
+        <Label text="Type:" styleClass="form-label"/>
+        <ComboBox fx:id="docTypeFilter" styleClass="combo-box" id="history-type-filter"/>
+        <Label text="Status:" styleClass="form-label"/>
+        <ComboBox fx:id="statusFilter" styleClass="combo-box" id="history-status-filter"/>
+        <Button text="Filter" onAction="#handleSearch" styleClass="btn-primary" id="history-filter-btn"/>
+        <Button text="Reset" onAction="#handleClearSearch" styleClass="btn-secondary" id="history-reset-btn"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="📥 Export CSV" onAction="#handleExportCSV" styleClass="btn-secondary" id="history-export-btn"/>
+        <Button text="🗑 Delete Selected" onAction="#handleDelete" styleClass="btn-danger" id="history-delete-btn"/>
+    </HBox>
+    <TableView fx:id="historyTable" VBox.vgrow="ALWAYS" styleClass="table-view" id="history-table">
+        <columns>
+            <TableColumn fx:id="docTypeCol" text="Doc Type" prefWidth="120"/>
+            <TableColumn fx:id="docNumCol" text="Document Number" prefWidth="200"/>
+            <TableColumn fx:id="statusCol" text="Validation Status" prefWidth="120"/>
+            <TableColumn fx:id="reasonCol" text="Verification Details" prefWidth="400"/>
+            <TableColumn fx:id="timeCol" text="Timestamp" prefWidth="180"/>
+        </columns>
+    </TableView>
+</VBox>

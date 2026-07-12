@@ -1,0 +1,25 @@
+# Maven
+target/
+*.releaseBackup
+
+# Log files
+*.log
+logs/
+
+# IDEs and editors
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS files
+Thumbs.db
+ehthumbs.db
+Desktop.ini

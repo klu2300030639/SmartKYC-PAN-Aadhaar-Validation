@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.smartkyc.controller.AadhaarValidationController"
+      spacing="24" style="-fx-padding:32;" alignment="TOP_CENTER">
+    <VBox styleClass="card" maxWidth="600" spacing="16">
+        <Label text="🪪 Aadhaar Card Validation" styleClass="form-title"/>
+        <Label text="Enter a 12-digit Aadhaar number to validate format and Verhoeff checksum pattern." styleClass="hint-label" wrapText="true"/>
+        <VBox spacing="8">
+            <Label text="Aadhaar Number" styleClass="form-label"/>
+            <HBox spacing="12">
+                <TextField fx:id="aadhaarInputField" promptText="e.g. 367598342167" styleClass="text-input" HBox.hgrow="ALWAYS" id="aadhaar-input"/>
+                <Button text="Validate" onAction="#handleValidate" styleClass="btn-primary" id="aadhaar-validate-btn"/>
+                <Button text="Clear" onAction="#handleClear" styleClass="btn-secondary" id="aadhaar-clear-btn"/>
+            </HBox>
+        </VBox>
+        <VBox fx:id="resultCard" styleClass="result-card" spacing="12" visible="false" managed="false">
+            <Label text="Validation Result" styleClass="result-heading"/>
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <Label text="Document:" styleClass="form-label"/>
+                <Label fx:id="resultAadhaarLabel" styleClass="result-value"/>
+            </HBox>
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <Label text="Status:" styleClass="form-label"/>
+                <Label fx:id="resultStatusLabel" styleClass="badge-valid"/>
+            </HBox>
+            <Label text="Details:" styleClass="form-label"/>
+            <Label fx:id="resultReasonLabel" styleClass="result-reason" wrapText="true"/>
+        </VBox>
+    </VBox>
+</VBox>

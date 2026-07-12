@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.smartkyc.controller.PANValidationController"
+      spacing="24" style="-fx-padding:32;" alignment="TOP_CENTER">
+    <VBox styleClass="card" maxWidth="600" spacing="16">
+        <Label text="💳 PAN Card Validation" styleClass="form-title"/>
+        <Label text="Enter a PAN number to validate format and category. Format: AAAAA9999A" styleClass="hint-label" wrapText="true"/>
+        <VBox spacing="8">
+            <Label text="PAN Number" styleClass="form-label"/>
+            <HBox spacing="12">
+                <TextField fx:id="panInputField" promptText="e.g. ABCDE1234F" styleClass="text-input" HBox.hgrow="ALWAYS" id="pan-input"/>
+                <Button text="Validate" onAction="#handleValidate" styleClass="btn-primary" id="pan-validate-btn"/>
+                <Button text="Clear" onAction="#handleClear" styleClass="btn-secondary" id="pan-clear-btn"/>
+            </HBox>
+        </VBox>
+        <VBox fx:id="resultCard" styleClass="result-card" spacing="12" visible="false" managed="false">
+            <Label text="Validation Result" styleClass="result-heading"/>
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <Label text="Document:" styleClass="form-label"/>
+                <Label fx:id="resultPanLabel" styleClass="result-value"/>
+            </HBox>
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <Label text="Status:" styleClass="form-label"/>
+                <Label fx:id="resultStatusLabel" styleClass="badge-valid"/>
+            </HBox>
+            <Label text="Details:" styleClass="form-label"/>
+            <Label fx:id="resultReasonLabel" styleClass="result-reason" wrapText="true"/>
+        </VBox>
+    </VBox>
+</VBox>

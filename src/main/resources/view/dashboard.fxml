@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.chart.*?>
+<ScrollPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.smartkyc.controller.DashboardController"
+            fitToWidth="true" styleClass="scroll-bg">
+    <VBox spacing="20" style="-fx-padding:24;">
+        <!-- KPI Cards Row -->
+        <HBox spacing="16">
+            <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS" alignment="CENTER" spacing="6">
+                <Label text="Total Validations" styleClass="kpi-label"/>
+                <Label fx:id="totalValidationsLabel" text="0" styleClass="kpi-value"/>
+            </VBox>
+            <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS" alignment="CENTER" spacing="6">
+                <Label text="Today's Validations" styleClass="kpi-label"/>
+                <Label fx:id="todayValidationsLabel" text="0" styleClass="kpi-value"/>
+            </VBox>
+            <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS" alignment="CENTER" spacing="6">
+                <Label text="Total Users" styleClass="kpi-label"/>
+                <Label fx:id="totalUsersLabel" text="0" styleClass="kpi-value"/>
+            </VBox>
+            <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS" alignment="CENTER" spacing="6">
+                <Label text="Aadhaar Valid/Invalid" styleClass="kpi-label"/>
+                <Label fx:id="aadhaarStatsLabel" text="0 / 0" styleClass="kpi-value"/>
+            </VBox>
+        </HBox>
+        <!-- PAN / Aadhaar stats -->
+        <HBox spacing="16">
+            <VBox styleClass="card" HBox.hgrow="ALWAYS" spacing="10">
+                <Label text="PAN Statistics" styleClass="card-title"/>
+                <HBox spacing="12">
+                    <Label fx:id="panValidLabel" text="Valid: 0" styleClass="badge-valid"/>
+                    <Label fx:id="panInvalidLabel" text="Invalid: 0" styleClass="badge-invalid"/>
+                </HBox>
+            </VBox>
+            <VBox styleClass="card" HBox.hgrow="ALWAYS" spacing="10">
+                <Label text="Aadhaar Statistics" styleClass="card-title"/>
+                <HBox spacing="12">
+                    <Label fx:id="aadhaarValidLabel" text="Valid: 0" styleClass="badge-valid"/>
+                    <Label fx:id="aadhaarInvalidLabel" text="Invalid: 0" styleClass="badge-invalid"/>
+                </HBox>
+            </VBox>
+        </HBox>
+        <!-- Charts -->
+        <HBox spacing="16">
+            <VBox styleClass="card" HBox.hgrow="ALWAYS" spacing="10">
+                <Label text="Document Distribution" styleClass="card-title"/>
+                <PieChart fx:id="validationPieChart" prefHeight="250" labelsVisible="true"/>
+            </VBox>
+            <VBox styleClass="card" HBox.hgrow="ALWAYS" spacing="10">
+                <Label text="Valid vs Invalid" styleClass="card-title"/>
+                <BarChart fx:id="validationBarChart" prefHeight="250">
+                    <xAxis><CategoryAxis/></xAxis>
+                    <yAxis><NumberAxis/></yAxis>
+                </BarChart>
+            </VBox>
+        </HBox>
+        <!-- Recent Tables -->
+        <VBox styleClass="card" spacing="10">
+            <Label text="Recent Validations" styleClass="card-title"/>
+            <TableView fx:id="recentValidationsTable" prefHeight="180" styleClass="table-view">
+                <columns>
+                    <TableColumn fx:id="valDocTypeCol" text="Type" prefWidth="80"/>
+                    <TableColumn fx:id="valDocNumCol" text="Document Number" prefWidth="200"/>
+                    <TableColumn fx:id="valStatusCol" text="Status" prefWidth="80"/>
+                    <TableColumn fx:id="valTimeCol" text="Time" prefWidth="160"/>
+                </columns>
+            </TableView>
+        </VBox>
+        <VBox styleClass="card" spacing="10">
+            <Label text="Recent Login Attempts" styleClass="card-title"/>
+            <TableView fx:id="recentLoginsTable" prefHeight="180" styleClass="table-view">
+                <columns>
+                    <TableColumn fx:id="loginUserCol" text="User" prefWidth="120"/>
+                    <TableColumn fx:id="loginStatusCol" text="Status" prefWidth="90"/>
+                    <TableColumn fx:id="loginIpCol" text="IP Address" prefWidth="130"/>
+                    <TableColumn fx:id="loginTimeCol" text="Time" prefWidth="160"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </VBox>
+</ScrollPane>

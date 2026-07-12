@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.smartkyc.controller.MainController" styleClass="root-pane">
+    <left>
+        <VBox styleClass="sidebar" spacing="4" prefWidth="220">
+            <Label text="SmartKYC" styleClass="sidebar-title"/>
+            <Label fx:id="userLabel" styleClass="sidebar-user" wrapText="true"/>
+            <Separator/>
+            <Button fx:id="dashboardBtn" text="📊  Dashboard" onAction="#showDashboard" styleClass="nav-btn" maxWidth="Infinity" id="nav-dashboard"/>
+            <Button fx:id="validatePanBtn" text="💳  Validate PAN" onAction="#showValidatePAN" styleClass="nav-btn" maxWidth="Infinity" id="nav-pan"/>
+            <Button fx:id="validateAadhaarBtn" text="🪪  Validate Aadhaar" onAction="#showValidateAadhaar" styleClass="nav-btn" maxWidth="Infinity" id="nav-aadhaar"/>
+            <Button fx:id="historyBtn" text="📋  History" onAction="#showHistory" styleClass="nav-btn" maxWidth="Infinity" id="nav-history"/>
+            <Button fx:id="logsBtn" text="🔍  Audit Logs" onAction="#showLogs" styleClass="nav-btn" maxWidth="Infinity" id="nav-logs"/>
+            <Button fx:id="usersBtn" text="👥  Users" onAction="#showUsers" styleClass="nav-btn" maxWidth="Infinity" id="nav-users"/>
+            <Button fx:id="settingsBtn" text="⚙️  Settings" onAction="#showSettings" styleClass="nav-btn" maxWidth="Infinity" id="nav-settings"/>
+            <Button fx:id="aboutBtn" text="ℹ️  About" onAction="#showAbout" styleClass="nav-btn" maxWidth="Infinity" id="nav-about"/>
+            <Region VBox.vgrow="ALWAYS"/>
+            <Button text="🚪  Sign Out" onAction="#handleSignOut" styleClass="btn-danger" maxWidth="Infinity" id="btn-signout"/>
+        </VBox>
+    </left>
+    <top>
+        <HBox styleClass="header-bar" alignment="CENTER_LEFT" spacing="16">
+            <Label fx:id="titleLabel" text="Dashboard" styleClass="header-title" HBox.hgrow="ALWAYS"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="dbStatusLabel" text="DB: Unknown"/>
+            <Label fx:id="timeLabel" styleClass="time-label"/>
+        </HBox>
+    </top>
+    <center>
+        <StackPane fx:id="contentPane" styleClass="content-area"/>
+    </center>
+</BorderPane>

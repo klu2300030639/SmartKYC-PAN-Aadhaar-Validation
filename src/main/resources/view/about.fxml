@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.smartkyc.controller.AboutController"
+      spacing="24" style="-fx-padding:32;" alignment="TOP_CENTER">
+    <VBox spacing="20" maxWidth="500" styleClass="card" alignment="CENTER">
+        <Label text="🔐 SmartKYC System" styleClass="form-title" style="-fx-font-size:24px;"/>
+        <Label text="Enterprise PAN &amp; Aadhaar Offline Verification Utility" styleClass="hint-label"/>
+        <Separator/>
+        <GridPane hgap="20" vgap="12" alignment="CENTER">
+            <columnConstraints>
+                <ColumnConstraints halignment="RIGHT"/>
+                <ColumnConstraints halignment="LEFT"/>
+            </columnConstraints>
+            <Label text="App Version:" GridPane.columnIndex="0" GridPane.rowIndex="0" style="-fx-font-weight:bold;"/>
+            <Label fx:id="versionLabel" text="1.0.0" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+            <Label text="Java Version:" GridPane.columnIndex="0" GridPane.rowIndex="1" style="-fx-font-weight:bold;"/>
+            <Label fx:id="javaVersionLabel" text="N/A" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+            <Label text="Developer:" GridPane.columnIndex="0" GridPane.rowIndex="2" style="-fx-font-weight:bold;"/>
+            <Label text="Advanced Agentic Systems" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+            <Label text="License:" GridPane.columnIndex="0" GridPane.rowIndex="3" style="-fx-font-weight:bold;"/>
+            <Label text="Apache License 2.0" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+        </GridPane>
+        <Separator/>
+        <Label text="© 2026 SmartKYC Inc. All rights reserved." styleClass="hint-label"/>
+    </VBox>
+</VBox>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.smartkyc.controller.SettingsController"
+      spacing="24" style="-fx-padding:32;" alignment="TOP_CENTER">
+    <VBox spacing="20" maxWidth="600" styleClass="card">
+        <Label text="⚙️ General Preferences" styleClass="form-title"/>
+        <VBox spacing="10">
+            <Label text="Application Theme" styleClass="form-label"/>
+            <HBox spacing="20" alignment="CENTER_LEFT">
+                <RadioButton fx:id="darkThemeRadio" text="Dark Theme" id="radio-dark-theme"/>
+                <RadioButton fx:id="lightThemeRadio" text="Light Theme" id="radio-light-theme"/>
+            </HBox>
+            <Button text="Apply Theme" onAction="#handleApplyTheme" styleClass="btn-primary" id="btn-apply-theme"/>
+        </VBox>
+        <Separator/>
+        <VBox spacing="12">
+            <Label text="Database Configuration (Read-only)" styleClass="form-label"/>
+            <GridPane hgap="12" vgap="12">
+                <columnConstraints>
+                    <ColumnConstraints prefWidth="120"/>
+                    <ColumnConstraints hgrow="ALWAYS"/>
+                </columnConstraints>
+                <Label text="Connection URL:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                <TextField fx:id="dbUrlField" editable="false" styleClass="text-input" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                <Label text="Username:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                <TextField fx:id="dbUserField" editable="false" styleClass="text-input" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+            </GridPane>
+            <HBox spacing="16" alignment="CENTER_LEFT">
+                <Button text="Test Connection" onAction="#handleTestConnection" styleClass="btn-secondary" id="btn-test-db"/>
+                <Label fx:id="connectionStatusLabel" text="Status: Untested"/>
+            </HBox>
+        </VBox>
+        <VBox fx:id="adminActionsCard" spacing="12">
+            <Separator/>
+            <Label text="🛡️ Administrative Maintenance" styleClass="form-label" style="-fx-text-fill: -danger-color;"/>
+            <HBox spacing="16">
+                <Button text="🗑 Purge KYC History" onAction="#handleClearHistory" styleClass="btn-danger" id="btn-purge-history"/>
+                <Button text="🗑 Purge Audit Logs" onAction="#handleClearLogs" styleClass="btn-danger" id="btn-purge-logs"/>
+            </HBox>
+        </VBox>
+    </VBox>
+</VBox>

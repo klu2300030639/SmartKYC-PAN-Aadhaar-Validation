@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<HBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.smartkyc.controller.UserManagementController"
+      spacing="20" style="-fx-padding:24;">
+    <!-- Left side: Table & Search -->
+    <VBox spacing="16" HBox.hgrow="ALWAYS">
+        <HBox spacing="12" alignment="CENTER_LEFT" styleClass="card">
+            <TextField fx:id="searchField" promptText="Search username/fullname/email..." styleClass="text-input" prefWidth="300" id="users-search-input"/>
+            <Button text="Search" onAction="#handleSearch" styleClass="btn-primary" id="users-search-btn"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="➕ Add New User" onAction="#handleNewUser" styleClass="btn-secondary" id="users-add-btn"/>
+        </HBox>
+        <TableView fx:id="usersTable" VBox.vgrow="ALWAYS" styleClass="table-view" id="users-table">
+            <columns>
+                <TableColumn fx:id="idCol" text="ID" prefWidth="60"/>
+                <TableColumn fx:id="nameCol" text="Full Name" prefWidth="160"/>
+                <TableColumn fx:id="usernameCol" text="Username" prefWidth="120"/>
+                <TableColumn fx:id="emailCol" text="Email" prefWidth="200"/>
+                <TableColumn fx:id="roleCol" text="Role" prefWidth="100"/>
+                <TableColumn fx:id="statusCol" text="Status" prefWidth="100"/>
+                <TableColumn fx:id="createdCol" text="Created" prefWidth="180"/>
+            </columns>
+        </TableView>
+    </VBox>
+    <!-- Right side: Detail/Edit/Add form -->
+    <VBox spacing="16" prefWidth="350" styleClass="card" alignment="TOP_CENTER">
+        <Label fx:id="formTitleLabel" text="User Details" styleClass="form-title"/>
+        <VBox spacing="12" alignment="TOP_LEFT" VBox.vgrow="ALWAYS">
+            <VBox spacing="6">
+                <Label text="Full Name" styleClass="form-label"/>
+                <TextField fx:id="fullNameField" styleClass="text-input" id="user-fullname"/>
+            </VBox>
+            <VBox spacing="6">
+                <Label text="Username" styleClass="form-label"/>
+                <TextField fx:id="usernameField" styleClass="text-input" id="user-username"/>
+            </VBox>
+            <VBox spacing="6">
+                <Label text="Email Address" styleClass="form-label"/>
+                <TextField fx:id="emailField" styleClass="text-input" id="user-email"/>
+            </VBox>
+            <VBox spacing="6">
+                <Label text="Phone Number" styleClass="form-label"/>
+                <TextField fx:id="phoneField" styleClass="text-input" id="user-phone"/>
+            </VBox>
+            <VBox spacing="6">
+                <Label text="Password" styleClass="form-label"/>
+                <PasswordField fx:id="passwordField" promptText="Enter to set/change" styleClass="text-input" id="user-password"/>
+            </VBox>
+            <VBox spacing="6">
+                <Label text="Role" styleClass="form-label"/>
+                <ComboBox fx:id="roleCombo" maxWidth="Infinity" styleClass="combo-box" id="user-role"/>
+            </VBox>
+            <VBox spacing="6">
+                <Label text="Status" styleClass="form-label"/>
+                <ComboBox fx:id="statusCombo" maxWidth="Infinity" styleClass="combo-box" id="user-status"/>
+            </VBox>
+        </VBox>
+        <Separator/>
+        <HBox spacing="12" alignment="CENTER">
+            <Button text="Save" onAction="#handleSave" styleClass="btn-primary" prefWidth="100" id="user-save-btn"/>
+            <Button text="Delete" onAction="#handleDelete" styleClass="btn-danger" prefWidth="100" id="user-delete-btn"/>
+        </HBox>
+    </VBox>
+</HBox>
