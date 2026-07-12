@@ -36,8 +36,8 @@ public class App extends Application {
             }
             primaryStage.setScene(scene);
             primaryStage.setTitle("SmartKYC - Sign In");
-            primaryStage.setResizable(false);
-            primaryStage.centerOnScreen();
+            primaryStage.setResizable(true);
+            primaryStage.setMaximized(true);
             primaryStage.setOnCloseRequest(ev -> { logger.info("Shutting down SmartKYC..."); LoggingService.close(); });
             primaryStage.show();
         } catch (IOException e) {
