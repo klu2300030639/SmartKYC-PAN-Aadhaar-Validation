@@ -39,38 +39,41 @@ def apply_custom_css():
         }
         
         /* Specific override for Streamlit sidebar navigation list text and links */
-        div[data-testid="stSidebarNav"] a {
+        section[data-testid="stSidebar"] a {
             color: #334155 !important;
             font-weight: 500 !important;
             transition: all 0.2s ease !important;
             padding: 8px 12px !important;
             margin: 2px 0 !important;
         }
-        div[data-testid="stSidebarNav"] a span {
+        section[data-testid="stSidebar"] a span,
+        section[data-testid="stSidebar"] a div {
             color: #334155 !important;
         }
         
         /* Active menu item styling in light mode */
-        div[data-testid="stSidebarNav"] a[data-selected="true"],
-        div[data-testid="stSidebarNav"] a[aria-current="page"] {
+        section[data-testid="stSidebar"] a[data-selected="true"],
+        section[data-testid="stSidebar"] a[aria-current="page"],
+        section[data-testid="stSidebar"] a[class*="active"] {
             color: #2563eb !important;
             background-color: rgba(59, 130, 246, 0.1) !important;
             border-radius: 8px !important;
         }
-        div[data-testid="stSidebarNav"] a[data-selected="true"] span,
-        div[data-testid="stSidebarNav"] a[aria-current="page"] span {
+        section[data-testid="stSidebar"] a[data-selected="true"] span,
+        section[data-testid="stSidebar"] a[aria-current="page"] span,
+        section[data-testid="stSidebar"] a[class*="active"] span {
             color: #2563eb !important;
             font-weight: 700 !important;
         }
         
         /* Hover effect for menu items */
-        div[data-testid="stSidebarNav"] a:hover {
+        section[data-testid="stSidebar"] a:hover {
             color: #3b82f6 !important;
             background-color: rgba(59, 130, 246, 0.05) !important;
             border-radius: 8px !important;
             text-decoration: none !important;
         }
-        div[data-testid="stSidebarNav"] a:hover span {
+        section[data-testid="stSidebar"] a:hover span {
             color: #3b82f6 !important;
         }
         
