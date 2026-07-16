@@ -25,6 +25,34 @@ def apply_custom_css():
             color: #0f172a !important;
         }
         
+        /* Force dark text for readability in light mode */
+        p, span, label, li, a, h1, h2, h3, h4, h5, h6 {
+            color: #0f172a !important;
+        }
+        
+        /* Sidebar link label fixes */
+        section[data-testid="stSidebar"] p,
+        section[data-testid="stSidebar"] span,
+        section[data-testid="stSidebar"] label,
+        section[data-testid="stSidebar"] a {
+            color: #0f172a !important;
+        }
+        
+        /* Fix radio button option text visibility */
+        div[data-testid="stWidgetLabel"] p,
+        div[class*="stRadio"] label,
+        div[class*="stRadio"] p,
+        div[class*="stRadio"] span {
+            color: #0f172a !important;
+        }
+
+        /* Fix Selectbox and text inputs text visibility */
+        div[data-baseweb="select"] span,
+        div[data-baseweb="select"] div,
+        input {
+            color: #0f172a !important;
+        }
+        
         /* Glassmorphic Cards */
         .kyc-card, div[class*="stBorderedContainer"] {
             background: rgba(255, 255, 255, 0.8) !important;
@@ -67,7 +95,8 @@ def apply_custom_css():
         }
         
         /* Vibrant primary button overrides */
-        .stButton>button {
+        .stButton>button,
+        .stButton>button * {
             background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
             color: #ffffff !important;
             border: none !important;
@@ -85,6 +114,19 @@ def apply_custom_css():
         }
         .stButton>button:active {
             transform: translateY(1px) !important;
+        }
+        
+        .stDownloadButton>button, 
+        .stDownloadButton>button * {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+            color: #ffffff !important;
+            border: none !important;
+            border-radius: 10px !important;
+            padding: 10px 24px !important;
+            font-weight: 600 !important;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25) !important;
+            transition: all 0.2s ease-in-out !important;
+            width: 100% !important;
         }
         
         /* Custom tables and charts container */
