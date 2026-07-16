@@ -10,18 +10,16 @@ def show_history():
     st.markdown("<p style='color: #64748b;'>View, filter, and export past verification transactions.</p>", unsafe_allow_html=True)
     
     # Filter tools in a card
-    st.markdown('<div class="kyc-card">', unsafe_allow_html=True)
-    st.markdown("<h4 style='margin-top:0; margin-bottom:15px;'>Search Filters</h4>", unsafe_allow_html=True)
-    
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        search_query = st.text_input("Document Number", placeholder="Search by number...", key="history_search_q")
-    with col2:
-        doc_type_filter = st.selectbox("Document Type", ["All", "PAN", "Aadhaar"], key="history_doc_filter")
-    with col3:
-        status_filter = st.selectbox("Status", ["All", "Valid", "Invalid"], key="history_status_filter")
+    with st.container(border=True):
+        st.markdown("<h4 style='margin-top:0; margin-bottom:15px;'>Search Filters</h4>", unsafe_allow_html=True)
         
-    st.markdown('</div>', unsafe_allow_html=True)
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            search_query = st.text_input("Document Number", placeholder="Search by number...", key="history_search_q")
+        with col2:
+            doc_type_filter = st.selectbox("Document Type", ["All", "PAN", "Aadhaar"], key="history_doc_filter")
+        with col3:
+            status_filter = st.selectbox("Status", ["All", "Valid", "Invalid"], key="history_status_filter")
     
     # Construct SQL query dynamically based on filters
     query = """
@@ -69,11 +67,9 @@ def show_history():
                 )
             
             # Display Table
-            st.markdown('<div class="data-table-container">', unsafe_allow_html=True)
             # Remove validation_id from display but keep it in df
             display_df = df.drop(columns=['validation_id'])
             st.dataframe(display_df, use_container_width=True, hide_index=True)
-            st.markdown('</div>', unsafe_allow_html=True)
             
         else:
             st.info("No matching records found in verification history.")

@@ -13,13 +13,11 @@ def show_validate():
     tab1, tab2 = st.tabs(["💳 PAN Card Verification", "🆔 Aadhaar Card Verification"])
     
     with tab1:
-        st.markdown('<div class="kyc-card">', unsafe_allow_html=True)
-        st.markdown("<h4 style='margin-top: 0;'>Validate PAN (Permanent Account Number)</h4>", unsafe_allow_html=True)
-        
-        pan_input = st.text_input("Enter PAN Number", placeholder="e.g. ABCDE1234F", key="pan_input_field")
-        validate_pan_btn = st.button("Verify PAN", key="pan_submit_btn")
-        
-        st.markdown('</div>', unsafe_allow_html=True)
+        with st.container(border=True):
+            st.markdown("<h4 style='margin-top: 0;'>Validate PAN (Permanent Account Number)</h4>", unsafe_allow_html=True)
+            
+            pan_input = st.text_input("Enter PAN Number", placeholder="e.g. ABCDE1234F", key="pan_input_field")
+            validate_pan_btn = st.button("Verify PAN", key="pan_submit_btn")
         
         if validate_pan_btn:
             result = validators.validate_pan(pan_input)
@@ -59,7 +57,7 @@ def show_validate():
                 cat_name = categories.get(cat_char, "Unknown")
                 
                 st.markdown(f"""
-                <div class="kyc-card" style="border-left: 5px solid #10b981 !important;">
+                <div class="kyc-card" style="border-left: 5px solid #10b981 !important; margin-top:15px;">
                     <h5 style="margin-top: 0; color: #10b981;">PAN Details Extraction</h5>
                     <p style="margin-bottom: 5px;"><b>Normalized Input:</b> <code style="font-size: 1.1rem; color: #3b82f6;">{result.normalized_input}</code></p>
                     <p style="margin-bottom: 5px;"><b>Category Code:</b> <code>{cat_char}</code></p>
@@ -70,13 +68,11 @@ def show_validate():
                 st.error(f"❌ **Validation Failed**\n\n{result.reason}")
                 
     with tab2:
-        st.markdown('<div class="kyc-card">', unsafe_allow_html=True)
-        st.markdown("<h4 style='margin-top: 0;'>Validate Aadhaar Card (12-Digit UID)</h4>", unsafe_allow_html=True)
-        
-        aadhaar_input = st.text_input("Enter Aadhaar Number", placeholder="e.g. 999912341234", key="aadhaar_input_field")
-        validate_aadhaar_btn = st.button("Verify Aadhaar", key="aadhaar_submit_btn")
-        
-        st.markdown('</div>', unsafe_allow_html=True)
+        with st.container(border=True):
+            st.markdown("<h4 style='margin-top: 0;'>Validate Aadhaar Card (12-Digit UID)</h4>", unsafe_allow_html=True)
+            
+            aadhaar_input = st.text_input("Enter Aadhaar Number", placeholder="e.g. 999912341234", key="aadhaar_input_field")
+            validate_aadhaar_btn = st.button("Verify Aadhaar", key="aadhaar_submit_btn")
         
         if validate_aadhaar_btn:
             result = validators.validate_aadhaar(aadhaar_input)

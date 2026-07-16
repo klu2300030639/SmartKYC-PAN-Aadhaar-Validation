@@ -46,77 +46,73 @@ def show_dashboard():
     col_left, col_right = st.columns(2)
     
     with col_left:
-        st.markdown('<div class="kyc-card">', unsafe_allow_html=True)
-        st.markdown("<h4 style='margin-top:0;'>Document Distribution</h4>", unsafe_allow_html=True)
-        doc_query = "SELECT document_type, COUNT(*) as count FROM validation_history GROUP BY document_type"
-        try:
-            doc_data = db.execute_query(doc_query, fetch=True)
-            if doc_data:
-                df_doc = pd.DataFrame(doc_data)
-                fig_doc = px.pie(df_doc, values='count', names='document_type', 
-                                 hole=0.4,
-                                 color_discrete_sequence=['#3b82f6', '#10b981'])
-                fig_doc.update_layout(margin=dict(t=0, b=0, l=0, r=0), 
-                                      height=220, 
-                                      paper_bgcolor='rgba(0,0,0,0)', 
-                                      plot_bgcolor='rgba(0,0,0,0)',
-                                      font_color='#94a3b8' if st.session_state.get('theme') == 'dark' else '#0f172a')
-                st.plotly_chart(fig_doc, use_container_width=True)
-            else:
-                st.info("No verification history available to visualize.")
-        except Exception as e:
-            st.error(f"Error drawing pie chart: {e}")
-        st.markdown('</div>', unsafe_allow_html=True)
+        with st.container(border=True):
+            st.markdown("<h4 style='margin-top:0;'>Document Distribution</h4>", unsafe_allow_html=True)
+            doc_query = "SELECT document_type, COUNT(*) as count FROM validation_history GROUP BY document_type"
+            try:
+                doc_data = db.execute_query(doc_query, fetch=True)
+                if doc_data:
+                    df_doc = pd.DataFrame(doc_data)
+                    fig_doc = px.pie(df_doc, values='count', names='document_type', 
+                                     hole=0.4,
+                                     color_discrete_sequence=['#3b82f6', '#10b981'])
+                    fig_doc.update_layout(margin=dict(t=0, b=0, l=0, r=0), 
+                                          height=220, 
+                                          paper_bgcolor='rgba(0,0,0,0)', 
+                                          plot_bgcolor='rgba(0,0,0,0)',
+                                          font_color='#94a3b8' if st.session_state.get('theme') == 'dark' else '#0f172a')
+                    st.plotly_chart(fig_doc, use_container_width=True)
+                else:
+                    st.info("No verification history available to visualize.")
+            except Exception as e:
+                st.error(f"Error drawing pie chart: {e}")
         
     with col_right:
-        st.markdown('<div class="kyc-card">', unsafe_allow_html=True)
-        st.markdown("<h4 style='margin-top:0;'>Status Breakdown</h4>", unsafe_allow_html=True)
-        status_query = "SELECT status, COUNT(*) as count FROM validation_history GROUP BY status"
-        try:
-            status_data = db.execute_query(status_query, fetch=True)
-            if status_data:
-                df_status = pd.DataFrame(status_data)
-                fig_status = px.bar(df_status, x='status', y='count', 
-                                    color='status',
-                                    color_discrete_map={'Valid': '#10b981', 'Invalid': '#ef4444'})
-                fig_status.update_layout(margin=dict(t=10, b=10, l=10, r=10), 
-                                         height=220,
-                                         paper_bgcolor='rgba(0,0,0,0)', 
-                                         plot_bgcolor='rgba(0,0,0,0)',
-                                         xaxis_title=None, yaxis_title="Count",
-                                         font_color='#94a3b8' if st.session_state.get('theme') == 'dark' else '#0f172a')
-                st.plotly_chart(fig_status, use_container_width=True)
-            else:
-                st.info("No verification history available to visualize.")
-        except Exception as e:
-            st.error(f"Error drawing bar chart: {e}")
-        st.markdown('</div>', unsafe_allow_html=True)
+        with st.container(border=True):
+            st.markdown("<h4 style='margin-top:0;'>Status Breakdown</h4>", unsafe_allow_html=True)
+            status_query = "SELECT status, COUNT(*) as count FROM validation_history GROUP BY status"
+            try:
+                status_data = db.execute_query(status_query, fetch=True)
+                if status_data:
+                    df_status = pd.DataFrame(status_data)
+                    fig_status = px.bar(df_status, x='status', y='count', 
+                                        color='status',
+                                        color_discrete_map={'Valid': '#10b981', 'Invalid': '#ef4444'})
+                    fig_status.update_layout(margin=dict(t=10, b=10, l=10, r=10), 
+                                             height=220,
+                                             paper_bgcolor='rgba(0,0,0,0)', 
+                                             plot_bgcolor='rgba(0,0,0,0)',
+                                             xaxis_title=None, yaxis_title="Count",
+                                             font_color='#94a3b8' if st.session_state.get('theme') == 'dark' else '#0f172a')
+                    st.plotly_chart(fig_status, use_container_width=True)
+                else:
+                    st.info("No verification history available to visualize.")
+            except Exception as e:
+                st.error(f"Error drawing bar chart: {e}")
 
     # Recent Activity Row
-    st.markdown('<div class="kyc-card">', unsafe_allow_html=True)
-    st.markdown("<h4 style='margin-top:0;'>Recent Activity</h4>", unsafe_allow_html=True)
-    
-    recent_query = """
-        SELECT v.document_type, v.document_number, v.status, v.reason, v.validated_at, u.username
-        FROM validation_history v
-        LEFT JOIN users u ON v.user_id = u.user_id
-        ORDER BY v.validated_at DESC
-        LIMIT 5
-    """
-    try:
-        recent_data = db.execute_query(recent_query, fetch=True)
-        if recent_data:
-            df_recent = pd.DataFrame(recent_data)
-            # Rename columns for presentation
-            df_recent.columns = ['Doc Type', 'Doc Number', 'Status', 'Message/Reason', 'Timestamp', 'Verified By']
-            # Reorder
-            st.dataframe(df_recent, use_container_width=True, hide_index=True)
-        else:
-            st.info("No recent verification records.")
-    except Exception as e:
-        st.error(f"Error fetching recent activity: {e}")
+    with st.container(border=True):
+        st.markdown("<h4 style='margin-top:0;'>Recent Activity</h4>", unsafe_allow_html=True)
         
-    st.markdown('</div>', unsafe_allow_html=True)
+        recent_query = """
+            SELECT v.document_type, v.document_number, v.status, v.reason, v.validated_at, u.username
+            FROM validation_history v
+            LEFT JOIN users u ON v.user_id = u.user_id
+            ORDER BY v.validated_at DESC
+            LIMIT 5
+        """
+        try:
+            recent_data = db.execute_query(recent_query, fetch=True)
+            if recent_data:
+                df_recent = pd.DataFrame(recent_data)
+                # Rename columns for presentation
+                df_recent.columns = ['Doc Type', 'Doc Number', 'Status', 'Message/Reason', 'Timestamp', 'Verified By']
+                # Reorder
+                st.dataframe(df_recent, use_container_width=True, hide_index=True)
+            else:
+                st.info("No recent verification records.")
+        except Exception as e:
+            st.error(f"Error fetching recent activity: {e}")
 
 if __name__ == "__main__":
     show_dashboard()

@@ -10,19 +10,17 @@ def show_audit_logs():
     st.markdown("<p style='color: #64748b;'>Review system security events, modifications, and user logins.</p>", unsafe_allow_html=True)
     
     # Filters
-    st.markdown('<div class="kyc-card">', unsafe_allow_html=True)
-    st.markdown("<h4 style='margin-top:0; margin-bottom:15px;'>Logs Filtering</h4>", unsafe_allow_html=True)
-    
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        keyword = st.text_input("Search Description", placeholder="e.g. admin...", key="audit_desc_search")
-    with col2:
-        module_filter = st.selectbox("Module", ["All", "Authentication", "Validation", "UserManagement", "Settings"], key="audit_mod_filter")
-    with col3:
-        action_filter = st.text_input("Action", placeholder="e.g. LOGIN_SUCCESS", key="audit_action_filter")
+    with st.container(border=True):
+        st.markdown("<h4 style='margin-top:0; margin-bottom:15px;'>Logs Filtering</h4>", unsafe_allow_html=True)
         
-    st.markdown('</div>', unsafe_allow_html=True)
-    
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            keyword = st.text_input("Search Description", placeholder="e.g. admin...", key="audit_desc_search")
+        with col2:
+            module_filter = st.selectbox("Module", ["All", "Authentication", "Validation", "UserManagement", "Settings"], key="audit_mod_filter")
+        with col3:
+            action_filter = st.text_input("Action", placeholder="e.g. LOGIN_SUCCESS", key="audit_action_filter")
+            
     # DB read query
     query = """
         SELECT a.log_id, u.username as 'User', a.module as 'Module', 
@@ -68,10 +66,8 @@ def show_audit_logs():
                 )
                 
             # Table View
-            st.markdown('<div class="data-table-container">', unsafe_allow_html=True)
             display_df = df.drop(columns=['log_id'])
             st.dataframe(display_df, use_container_width=True, hide_index=True)
-            st.markdown('</div>', unsafe_allow_html=True)
             
         else:
             st.info("No matching audit logs found.")
