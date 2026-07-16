@@ -38,6 +38,14 @@ def apply_custom_css():
             color: #0f172a !important;
         }
         
+        /* Specific override for Streamlit sidebar navigation list text */
+        div[data-testid="stSidebarNav"] *,
+        div[data-testid="stSidebarNav"] a,
+        div[data-testid="stSidebarNav"] span,
+        div[data-testid="stSidebarNav"] div {
+            color: #0f172a !important;
+        }
+        
         /* Fix radio button option text visibility */
         div[data-testid="stWidgetLabel"] p,
         div[class*="stRadio"] label,
