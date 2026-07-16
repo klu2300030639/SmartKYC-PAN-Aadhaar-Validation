@@ -6,6 +6,11 @@ from styling import apply_custom_css
 def show_audit_logs():
     apply_custom_css()
     
+    # Secure access check
+    if st.session_state.get('role') != 'Admin':
+        st.error("Access Denied: You do not have permissions to view the System Audit Logs.")
+        return
+    
     st.markdown('<h2 style="margin-top:0;">🛡️ System Audit Logs</h2>', unsafe_allow_html=True)
     st.markdown("<p style='color: #64748b;'>Review system security events, modifications, and user logins.</p>", unsafe_allow_html=True)
     
