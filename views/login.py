@@ -21,24 +21,22 @@ def show_login():
     col1, col2, col3 = st.columns([1, 1.8, 1])
     
     with col2:
-        st.markdown('<div class="kyc-card">', unsafe_allow_html=True)
-        st.markdown("<h3 style='margin-top: 0; text-align: center; margin-bottom: 24px;'>Secure Authentication</h3>", unsafe_allow_html=True)
-        
-        username = st.text_input("Username", key="login_username_field", placeholder="Enter your username")
-        password = st.text_input("Password", type="password", key="login_password_field", placeholder="Enter your password")
-        
-        st.markdown("<div style='margin-top: 24px;'>", unsafe_allow_html=True)
-        login_btn = st.button("Log In", key="login_submit_btn")
-        st.markdown("</div>", unsafe_allow_html=True)
-        
-        # Admin Hint
-        st.markdown("""
-        <div style="text-align: center; margin-top: 20px; font-size: 0.85rem; color: #94a3b8;">
-            💡 Admin Hint: Username: <b>admin</b> | Password: <b>admin123</b>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        st.markdown('</div>', unsafe_allow_html=True)
+        with st.container(border=True):
+            st.markdown("<h3 style='margin-top: 0; text-align: center; margin-bottom: 24px;'>Secure Authentication</h3>", unsafe_allow_html=True)
+            
+            username = st.text_input("Username", key="login_username_field", placeholder="Enter your username")
+            password = st.text_input("Password", type="password", key="login_password_field", placeholder="Enter your password")
+            
+            st.markdown("<div style='margin-top: 24px;'>", unsafe_allow_html=True)
+            login_btn = st.button("Log In", key="login_submit_btn")
+            st.markdown("</div>", unsafe_allow_html=True)
+            
+            # Admin Hint
+            st.markdown("""
+            <div style="text-align: center; margin-top: 20px; font-size: 0.85rem; color: #94a3b8;">
+                💡 Admin Hint: Username: <b>admin</b> | Password: <b>admin123</b>
+            </div>
+            """, unsafe_allow_html=True)
         
         if login_btn:
             if not username or not password:
