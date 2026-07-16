@@ -53,7 +53,28 @@ def get_pool():
                 **config
             )
         except Exception as e:
-            st.error(f"Database connection pool initialization failed: {e}")
+            config = get_connection_config()
+            if config.get("host") == "localhost" or config.get("host") == "127.0.0.1":
+                st.error("""
+                ### 🛑 Database Connection Failed (Streamlit Cloud)
+                Your application is currently running in the cloud on Streamlit Community Cloud, but it is trying to connect to a MySQL database on `localhost` (your local computer). 
+                
+                Streamlit Cloud cannot reach databases hosted on your local machine.
+                
+                **To resolve this:**
+                1. Host your MySQL database on a cloud provider like **Aiven.io** (free tier available) or **Railway.app**.
+                2. Copy the public connection hostname, username, and password.
+                3. Open your Streamlit Cloud dashboard, go to **Settings** -> **Secrets**, and input the credentials:
+                ```toml
+                DB_HOST = "your-public-cloud-db-hostname"
+                DB_PORT = 3306
+                DB_DATABASE = "KYCValidatorDB"
+                DB_USER = "your-database-username"
+                DB_PASSWORD = "your-database-password"
+                ```
+                """)
+            else:
+                st.error(f"Database connection pool initialization failed: {e}")
             raise e
     return _connection_pool
 
