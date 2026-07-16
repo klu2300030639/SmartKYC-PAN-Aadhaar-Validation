@@ -45,10 +45,13 @@ if not st.session_state.logged_in:
     pg = st.navigation([login_page], position="hidden")
 else:
     # Add pages dynamically based on permissions
-    nav_pages = [dashboard_page, validate_page, history_page]
-    if st.session_state.get('role') == 'Admin':
-        nav_pages.append(users_page)
-    nav_pages.extend([audit_page, settings_page])
+    role = st.session_state.get('role')
+    if role == 'Admin':
+        nav_pages = [dashboard_page, validate_page, history_page, users_page, audit_page, settings_page]
+    elif role == 'User':
+        nav_pages = [dashboard_page, validate_page, history_page, audit_page, settings_page]
+    else: # Guest role (self-registered limited access)
+        nav_pages = [dashboard_page, validate_page]
     
     # Sidebar Header Details
     with st.sidebar:

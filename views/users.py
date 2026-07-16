@@ -43,7 +43,7 @@ def show_users():
                 email = st.text_input("Email Address", placeholder="e.g. john@smartkyc.com")
                 phone = st.text_input("Phone Number", placeholder="e.g. +919999999999")
                 password = st.text_input("Password", type="password", placeholder="Enter secure password")
-                role = st.selectbox("Role Permission", ["User", "Admin"])
+                role = st.selectbox("Role Permission", ["Guest", "User", "Admin"])
                 status = st.selectbox("Status", ["Active", "Suspended"])
                 
                 submit_btn = st.form_submit_button("Add User Account")
@@ -97,7 +97,7 @@ def show_users():
                     st.markdown(f"Currently managing: **{curr_name}** (`{selected_username}`)")
                     
                     with st.form("modify_user_form"):
-                        new_role = st.selectbox("New Role Permission", ["User", "Admin"], index=["User", "Admin"].index(curr_role))
+                        new_role = st.selectbox("New Role Permission", ["Guest", "User", "Admin"], index=["Guest", "User", "Admin"].index(curr_role))
                         new_status = st.selectbox("New Status", ["Active", "Suspended"], index=["Active", "Suspended"].index(curr_status))
                         
                         update_btn = st.form_submit_button("Update Account Settings")

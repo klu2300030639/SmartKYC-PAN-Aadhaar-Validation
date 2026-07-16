@@ -9,16 +9,29 @@ def show_dashboard():
     
     st.markdown('<h2 style="margin-top:0;">📊 Dashboard</h2>', unsafe_allow_html=True)
     st.markdown("<p style='color: #64748b;'>Real-time analytics and validation insights</p>", unsafe_allow_html=True)
+      # Scope queries based on user role (Guests only see their own activity)
+    role = st.session_state.get('role')
+    user_id = st.session_state.get('user_id')
     
-    # Check if there is data in validation history
-    total_query = "SELECT COUNT(*) as count FROM validation_history"
-    valid_query = "SELECT COUNT(*) as count FROM validation_history WHERE status = 'Valid'"
-    invalid_query = "SELECT COUNT(*) as count FROM validation_history WHERE status = 'Invalid'"
+    if role == 'Guest':
+        where_clause = " WHERE user_id = %s"
+        valid_where = " WHERE status = 'Valid' AND user_id = %s"
+        invalid_where = " WHERE status = 'Invalid' AND user_id = %s"
+        query_params = (user_id,)
+    else:
+        where_clause = ""
+        valid_where = " WHERE status = 'Valid'"
+        invalid_where = " WHERE status = 'Invalid'"
+        query_params = ()
+        
+    total_query = f"SELECT COUNT(*) as count FROM validation_history{where_clause}"
+    valid_query = f"SELECT COUNT(*) as count FROM validation_history{valid_where}"
+    invalid_query = f"SELECT COUNT(*) as count FROM validation_history{invalid_where}"
     
     try:
-        total_res = db.execute_query(total_query, fetch=True)
-        valid_res = db.execute_query(valid_query, fetch=True)
-        invalid_res = db.execute_query(invalid_query, fetch=True)
+        total_res = db.execute_query(total_query, query_params, fetch=True)
+        valid_res = db.execute_query(valid_query, query_params, fetch=True)
+        invalid_res = db.execute_query(invalid_query, query_params, fetch=True)
         
         total_count = total_res[0]['count'] if total_res else 0
         valid_count = valid_res[0]['count'] if valid_res else 0
@@ -48,9 +61,16 @@ def show_dashboard():
     with col_left:
         with st.container(border=True):
             st.markdown("<h4 style='margin-top:0;'>Document Distribution</h4>", unsafe_allow_html=True)
-            doc_query = "SELECT document_type, COUNT(*) as count FROM validation_history GROUP BY document_type"
+            
+            if role == 'Guest':
+                doc_query = "SELECT document_type, COUNT(*) as count FROM validation_history WHERE user_id = %s GROUP BY document_type"
+                doc_params = (user_id,)
+            else:
+                doc_query = "SELECT document_type, COUNT(*) as count FROM validation_history GROUP BY document_type"
+                doc_params = ()
+                
             try:
-                doc_data = db.execute_query(doc_query, fetch=True)
+                doc_data = db.execute_query(doc_query, doc_params, fetch=True)
                 if doc_data:
                     df_doc = pd.DataFrame(doc_data)
                     fig_doc = px.pie(df_doc, values='count', names='document_type', 
@@ -70,9 +90,16 @@ def show_dashboard():
     with col_right:
         with st.container(border=True):
             st.markdown("<h4 style='margin-top:0;'>Status Breakdown</h4>", unsafe_allow_html=True)
-            status_query = "SELECT status, COUNT(*) as count FROM validation_history GROUP BY status"
+            
+            if role == 'Guest':
+                status_query = "SELECT status, COUNT(*) as count FROM validation_history WHERE user_id = %s GROUP BY status"
+                status_params = (user_id,)
+            else:
+                status_query = "SELECT status, COUNT(*) as count FROM validation_history GROUP BY status"
+                status_params = ()
+                
             try:
-                status_data = db.execute_query(status_query, fetch=True)
+                status_data = db.execute_query(status_query, status_params, fetch=True)
                 if status_data:
                     df_status = pd.DataFrame(status_data)
                     fig_status = px.bar(df_status, x='status', y='count', 
@@ -89,20 +116,33 @@ def show_dashboard():
                     st.info("No verification history available to visualize.")
             except Exception as e:
                 st.error(f"Error drawing bar chart: {e}")
-
+ 
     # Recent Activity Row
     with st.container(border=True):
         st.markdown("<h4 style='margin-top:0;'>Recent Activity</h4>", unsafe_allow_html=True)
         
-        recent_query = """
-            SELECT v.document_type, v.document_number, v.status, v.reason, v.validated_at, u.username
-            FROM validation_history v
-            LEFT JOIN users u ON v.user_id = u.user_id
-            ORDER BY v.validated_at DESC
-            LIMIT 5
-        """
+        if role == 'Guest':
+            recent_query = """
+                SELECT v.document_type, v.document_number, v.status, v.reason, v.validated_at, u.username
+                FROM validation_history v
+                LEFT JOIN users u ON v.user_id = u.user_id
+                WHERE v.user_id = %s
+                ORDER BY v.validated_at DESC
+                LIMIT 5
+            """
+            recent_params = (user_id,)
+        else:
+            recent_query = """
+                SELECT v.document_type, v.document_number, v.status, v.reason, v.validated_at, u.username
+                FROM validation_history v
+                LEFT JOIN users u ON v.user_id = u.user_id
+                ORDER BY v.validated_at DESC
+                LIMIT 5
+            """
+            recent_params = ()
+            
         try:
-            recent_data = db.execute_query(recent_query, fetch=True)
+            recent_data = db.execute_query(recent_query, recent_params, fetch=True)
             if recent_data:
                 df_recent = pd.DataFrame(recent_data)
                 # Rename columns for presentation
@@ -112,7 +152,7 @@ def show_dashboard():
             else:
                 st.info("No recent verification records.")
         except Exception as e:
-            st.error(f"Error fetching recent activity: {e}")
+            st.error(f"Error fetching recent activity: {e}")activity: {e}")
 
 if __name__ == "__main__":
     show_dashboard()
