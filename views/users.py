@@ -111,6 +111,25 @@ def show_users():
                                 st.success(f"Successfully updated account settings for {selected_username}")
                             except Exception as e:
                                 st.error(f"Update query failed: {e}")
+                                
+                    st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
+                    with st.expander("Danger Zone ⚠️"):
+                        st.warning(f"Are you sure you want to completely delete the account for **{selected_username}**? This action cannot be undone.")
+                        delete_btn = st.button("Delete User Account", type="primary", key="del_user_btn")
+                        if delete_btn:
+                            if selected_username == st.session_state.get("username"):
+                                st.error("You cannot delete your own active Admin account!")
+                            else:
+                                del_q = "DELETE FROM users WHERE username = %s"
+                                try:
+                                    db.execute_query(del_q, (selected_username,), commit=True)
+                                    auth.log_audit(st.session_state.get('user_id'), "DELETE_USER", "UserManagement", f"Deleted user account: {selected_username}")
+                                    st.success(f"Successfully deleted account: {selected_username}")
+                                    import time
+                                    time.sleep(1)
+                                    st.rerun()
+                                except Exception as e:
+                                    st.error(f"Failed to delete user: {e}")
             else:
                 st.info("No active accounts found.")
 

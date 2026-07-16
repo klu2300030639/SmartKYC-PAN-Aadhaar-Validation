@@ -38,12 +38,7 @@ def show_login():
                     st.markdown("<div style='margin-top: 24px;'></div>", unsafe_allow_html=True)
                     login_btn = st.button("Log In", key="login_submit_btn")
                     
-                    # Admin Hint
-                    st.markdown("""
-                    <div style="text-align: center; margin-top: 20px; font-size: 0.85rem; color: #94a3b8;">
-                        💡 Admin Hint: Username: <b>admin</b> | Password: <b>admin123</b>
-                    </div>
-                    """, unsafe_allow_html=True)
+
                     
                 if login_btn:
                     if not username or not password:
