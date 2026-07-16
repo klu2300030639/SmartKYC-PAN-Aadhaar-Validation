@@ -49,7 +49,7 @@ else:
     if role == 'Admin':
         nav_pages = [dashboard_page, validate_page, history_page, users_page, audit_page, settings_page]
     elif role == 'User':
-        nav_pages = [dashboard_page, validate_page, history_page, audit_page, settings_page]
+        nav_pages = [dashboard_page, validate_page, settings_page]
     else: # Guest role (self-registered limited access)
         nav_pages = [dashboard_page, validate_page]
     
