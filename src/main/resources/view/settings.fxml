@@ -34,7 +34,7 @@
         </VBox>
         <VBox fx:id="adminActionsCard" spacing="12">
             <Separator/>
-            <Label text="🛡️ Administrative Maintenance" styleClass="form-label" style="-fx-text-fill: -danger-color;"/>
+            <Label text="🛡️ Administrative Maintenance" styleClass="form-label" style="-fx-text-fill: #ef4444;"/>
             <HBox spacing="16">
                 <Button text="🗑 Purge KYC History" onAction="#handleClearHistory" styleClass="btn-danger" id="btn-purge-history"/>
                 <Button text="🗑 Purge Audit Logs" onAction="#handleClearLogs" styleClass="btn-danger" id="btn-purge-logs"/>

@@ -35,7 +35,7 @@ public class SettingsController {
         connectionStatusLabel.setText("Testing...");
         boolean ok=DatabaseManager.checkConnection();
         connectionStatusLabel.setText(ok?"● Connected":"● Connection Failed");
-        connectionStatusLabel.setStyle(ok?"-fx-text-fill:-success-color;-fx-font-weight:bold;":"-fx-text-fill:-danger-color;-fx-font-weight:bold;");
+        connectionStatusLabel.setStyle(ok?"-fx-text-fill:#10b981;-fx-font-weight:bold;":"-fx-text-fill:#ef4444;-fx-font-weight:bold;");
     }
     @FXML private void handleClearHistory(){if(AlertService.showConfirmation("Clear","Confirm","Permanently delete all validation history? Cannot be undone.")){if(HistoryService.clearHistory())AlertService.showInfo("Done","Cleared","All validation history removed.");else AlertService.showError("Error","Failed","Could not clear history.");}}
     @FXML private void handleClearLogs(){if(AlertService.showConfirmation("Clear","Confirm","Permanently clear all audit logs? Cannot be undone.")){if(AuditService.clearLogs())AlertService.showInfo("Done","Cleared","All audit logs removed.");else AlertService.showError("Error","Failed","Could not clear logs.");}}
