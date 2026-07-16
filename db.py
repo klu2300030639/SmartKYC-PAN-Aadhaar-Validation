@@ -12,7 +12,17 @@ _connection_pool = None
 def get_connection_config():
     # If deploying on Streamlit Cloud, st.secrets will contain configuration
     try:
-        if "db" in st.secrets:
+        # Support flat environment-like naming in st.secrets
+        if "DB_HOST" in st.secrets:
+            return {
+                "host": st.secrets.get("DB_HOST"),
+                "port": int(st.secrets.get("DB_PORT", 3306)),
+                "database": st.secrets.get("DB_DATABASE", "KYCValidatorDB"),
+                "user": st.secrets.get("DB_USER", "root"),
+                "password": st.secrets.get("DB_PASSWORD", "")
+            }
+        # Support nested [db] format
+        elif "db" in st.secrets:
             return {
                 "host": st.secrets.db.get("host", "localhost"),
                 "port": int(st.secrets.db.get("port", 3306)),
