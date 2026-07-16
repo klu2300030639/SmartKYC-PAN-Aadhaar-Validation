@@ -152,7 +152,7 @@ def show_dashboard():
             else:
                 st.info("No recent verification records.")
         except Exception as e:
-            st.error(f"Error fetching recent activity: {e}")activity: {e}")
+            st.error(f"Error fetching recent activity: {e}")
 
 if __name__ == "__main__":
     show_dashboard()
