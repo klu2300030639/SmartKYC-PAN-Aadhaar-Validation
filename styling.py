@@ -26,7 +26,7 @@ def apply_custom_css():
         }
         
         /* Glassmorphic Cards */
-        .kyc-card, div[data-testid="stVerticalBlockBorder"] {
+        .kyc-card, div[class*="stBorderedContainer"] {
             background: rgba(255, 255, 255, 0.8) !important;
             backdrop-filter: blur(10px) !important;
             border: 1px solid rgba(226, 232, 240, 0.8) !important;
@@ -36,7 +36,7 @@ def apply_custom_css():
             margin-bottom: 20px !important;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
         }
-        .kyc-card:hover, div[data-testid="stVerticalBlockBorder"]:hover {
+        .kyc-card:hover, div[class*="stBorderedContainer"]:hover {
             transform: translateY(-2px) !important;
             box-shadow: 0 10px 30px -10px rgba(59, 130, 246, 0.15) !important;
             border-color: rgba(59, 130, 246, 0.3) !important;
@@ -126,7 +126,7 @@ def apply_custom_css():
         }
         
         /* Glassmorphic Cards */
-        .kyc-card, div[data-testid="stVerticalBlockBorder"] {
+        .kyc-card, div[class*="stBorderedContainer"] {
             background: rgba(30, 41, 59, 0.45) !important;
             backdrop-filter: blur(16px) !important;
             border: 1px solid rgba(51, 65, 85, 0.6) !important;
@@ -136,7 +136,7 @@ def apply_custom_css():
             margin-bottom: 20px !important;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
         }
-        .kyc-card:hover, div[data-testid="stVerticalBlockBorder"]:hover {
+        .kyc-card:hover, div[class*="stBorderedContainer"]:hover {
             transform: translateY(-2px) !important;
             box-shadow: 0 10px 30px -10px rgba(59, 130, 246, 0.3) !important;
             border-color: rgba(59, 130, 246, 0.5) !important;

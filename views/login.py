@@ -27,9 +27,8 @@ def show_login():
             username = st.text_input("Username", key="login_username_field", placeholder="Enter your username")
             password = st.text_input("Password", type="password", key="login_password_field", placeholder="Enter your password")
             
-            st.markdown("<div style='margin-top: 24px;'>", unsafe_allow_html=True)
+            st.markdown("<div style='margin-top: 24px;'></div>", unsafe_allow_html=True)
             login_btn = st.button("Log In", key="login_submit_btn")
-            st.markdown("</div>", unsafe_allow_html=True)
             
             # Admin Hint
             st.markdown("""
