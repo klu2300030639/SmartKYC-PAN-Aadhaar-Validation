@@ -86,3 +86,31 @@ def send_otp_email(to_email: str, otp: str) -> bool:
         server.sendmail(smtp_user, to_email, msg.as_string())
         
     return True
+
+def send_sms_otp(phone_number: str, otp: str) -> bool:
+    """
+    Sends an OTP verification SMS to the user via Twilio.
+    If Twilio configurations are missing, throws ValueError to trigger local console logging.
+    """
+    import requests
+    
+    sid = os.getenv("TWILIO_ACCOUNT_SID", "")
+    token = os.getenv("TWILIO_AUTH_TOKEN", "")
+    from_num = os.getenv("TWILIO_FROM_NUMBER", "")
+    
+    if not sid or not token or not from_num:
+        raise ValueError("Twilio SMS credentials not configured in environment variables (.env)")
+        
+    url = f"https://api.twilio.com/2010-04-01/Accounts/{sid}/Messages.json"
+    payload = {
+        "To": phone_number,
+        "From": from_num,
+        "Body": f"Your SmartKYC verification code is: {otp}. Valid for 5 minutes."
+    }
+    
+    response = requests.post(url, data=payload, auth=(sid, token))
+    
+    if response.status_code not in (200, 201):
+        raise Exception(f"Failed to send SMS via Twilio API: {response.text}")
+        
+    return True
