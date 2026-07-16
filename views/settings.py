@@ -9,34 +9,7 @@ def show_settings():
     st.markdown('<h2 style="margin-top:0;">⚙️ Application Configuration</h2>', unsafe_allow_html=True)
     st.markdown("<p style='color: #64748b;'>Manage visual interface parameters, database connectivity, and maintenance operations.</p>", unsafe_allow_html=True)
     
-    # Card 1: Theme Selection
-    with st.container(border=True):
-        st.markdown("<h4 style='margin-top:0;'>Interface Appearance</h4>", unsafe_allow_html=True)
-        
-        # Read current theme from DB
-        current_theme = "dark"
-        try:
-            theme_res = db.execute_query("SELECT setting_value FROM application_settings WHERE setting_key = 'theme'", fetch=True)
-            if theme_res:
-                current_theme = theme_res[0]['setting_value'].lower()
-        except Exception:
-            pass
-            
-        theme_options = ["dark", "light"]
-        selected_theme = st.radio("Choose App Theme", theme_options, index=theme_options.index(current_theme), horizontal=True, key="settings_theme_radio")
-        
-        apply_theme_btn = st.button("Apply Appearance Settings", key="settings_apply_theme_btn")
-        if apply_theme_btn:
-            try:
-                db.execute_query("UPDATE application_settings SET setting_value = %s WHERE setting_key = 'theme'", (selected_theme,), commit=True)
-                st.session_state.theme = selected_theme
-                auth.log_audit(st.session_state.get('user_id'), "UPDATE_SETTINGS", "Settings", f"Changed UI theme to {selected_theme}")
-                st.success(f"Theme successfully updated to {selected_theme.upper()}! Refreshing...")
-                st.rerun()
-            except Exception as e:
-                st.error(f"Failed to update theme in database: {e}")
-            
-    # Card 2: Database Configuration details (read-only info)
+    # Database Configuration details (read-only info)
     with st.container(border=True):
         st.markdown("<h4 style='margin-top:0;'>Database Connectivity Test</h4>", unsafe_allow_html=True)
         

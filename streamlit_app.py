@@ -22,16 +22,7 @@ st.set_page_config(
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 if "theme" not in st.session_state:
-    # Attempt to load theme preference from db, default to dark
-    theme = "dark"
-    if db.check_db_connection():
-        try:
-            res = db.execute_query("SELECT setting_value FROM application_settings WHERE setting_key = 'theme'", fetch=True)
-            if res:
-                theme = res[0]['setting_value'].lower()
-        except Exception:
-            pass
-    st.session_state.theme = theme
+    st.session_state.theme = "dark"
 
 # Dynamic Page Navigation API (Streamlit >= 1.35.0)
 def handle_logout():
