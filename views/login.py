@@ -27,12 +27,12 @@ def show_login():
         login_method = st.radio("Select Login Method", ["Password", "Gmail OTP"], horizontal=True, key="login_method_selector")
         
         if login_method == "Password":
-            with st.container(border=True):
-                username = st.text_input("Username", key="login_username_field", placeholder="Enter your username")
-                password = st.text_input("Password", type="password", key="login_password_field", placeholder="Enter your password")
+            with st.form("password_login_form", border=True):
+                username = st.text_input("Username", placeholder="Enter your username")
+                password = st.text_input("Password", type="password", placeholder="Enter your password")
                 
-                st.markdown("<div style='margin-top: 24px;'></div>", unsafe_allow_html=True)
-                login_btn = st.button("Log In", key="login_submit_btn")
+                st.markdown("<div style='margin-top: 15px;'></div>", unsafe_allow_html=True)
+                login_btn = st.form_submit_button("Log In")
                 
             if login_btn:
                 if not username or not password:
@@ -41,12 +41,18 @@ def show_login():
                     success, message = auth.login(username, password)
                     if success:
                         st.success(message)
+                        import time
+                        time.sleep(0.5)
                         st.rerun()
                     else:
                         st.error(message)
         else: # Gmail OTP
             with st.container(border=True):
-                email = st.text_input("Gmail Address", key="login_email_field", placeholder="Enter your registered email")
+                # Form 1: Email Input
+                with st.form("otp_email_form"):
+                    email = st.text_input("Gmail Address", key="login_email_field", placeholder="Enter your registered email")
+                    st.markdown("<div style='margin-top: 5px;'></div>", unsafe_allow_html=True)
+                    send_otp_btn = st.form_submit_button("Send OTP Verification")
                 
                 # Store sent OTP state
                 if "otp" not in st.session_state:
@@ -54,8 +60,6 @@ def show_login():
                 if "otp_sent_email" not in st.session_state:
                     st.session_state.otp_sent_email = None
                     
-                send_otp_btn = st.button("Send OTP Verification", key="send_otp_btn")
-                
                 if send_otp_btn:
                     if not email:
                         st.warning("Please enter your Gmail address.")
@@ -83,8 +87,11 @@ def show_login():
                             
                 if st.session_state.otp and st.session_state.otp_sent_email == email:
                     st.markdown("---")
-                    otp_input = st.text_input("Enter 6-Digit OTP", key="otp_input_field", placeholder="e.g. 123456")
-                    verify_otp_btn = st.button("Verify & Log In", key="verify_otp_btn")
+                    # Form 2: OTP Input
+                    with st.form("otp_verify_form"):
+                        otp_input = st.text_input("Enter 6-Digit OTP", key="otp_input_field", placeholder="e.g. 123456")
+                        st.markdown("<div style='margin-top: 5px;'></div>", unsafe_allow_html=True)
+                        verify_otp_btn = st.form_submit_button("Verify & Log In")
                     
                     if verify_otp_btn:
                         if not otp_input:
@@ -96,6 +103,8 @@ def show_login():
                                 # Clear OTP states
                                 st.session_state.otp = None
                                 st.session_state.otp_sent_email = None
+                                import time
+                                time.sleep(0.5)
                                 st.rerun()
                             else:
                                 st.error(message)
