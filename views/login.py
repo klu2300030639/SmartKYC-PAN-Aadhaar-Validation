@@ -1,5 +1,7 @@
 import streamlit as st
 import auth
+import db
+import email_utils
 from styling import apply_custom_css
 
 def show_login():
@@ -70,7 +72,6 @@ def show_login():
                             st.warning("Please enter your Gmail address.")
                         else:
                             # Verify if email exists
-                            import db
                             check_q = "SELECT user_id FROM users WHERE email = %s"
                             try:
                                 res = db.execute_query(check_q, (email,), fetch=True)
@@ -78,7 +79,6 @@ def show_login():
                                     st.error("This email is not registered. Please create an account first.")
                                 else:
                                     # Generate and send OTP
-                                    import email_utils
                                     otp = email_utils.generate_otp()
                                     st.session_state.otp = otp
                                     st.session_state.otp_sent_email = email
