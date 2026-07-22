@@ -62,9 +62,7 @@ pip install -r requirements.txt
 ```bash
 streamlit run streamlit_app.py
 ```
-*No database configuration is required! The application will automatically create a local `kyc_validator.db` file and seed the default **Admin** account:*
-- **Username**: `admin`
-- **Password**: `admin123`
+*No database configuration is required! The application will automatically create a local `kyc_validator.db` file and seed a default administrator account. (Refer to database.sql for initial seeding).*
 
 ---
 
