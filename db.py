@@ -119,6 +119,29 @@ def init_sqlite_db(conn):
                 VALUES ('System Administrator', 'ADMIN', 'admin@smartkyc.com', '$2b$10$aTdvtkOadKHMNjT5brkqmeOLF8CKLdYinhmzHd.XN9omRNklr2hva', '+1234567890', 'Admin', 'Active')
                 """)
         
+    # Seed Sindiri User (username: Sindiri, password: Aryan@AS_1622)
+    cursor.execute("SELECT user_id FROM users WHERE username = 'Sindiri'")
+    if not cursor.fetchone():
+        cursor.execute("SELECT user_id FROM users WHERE email = 'aryansindiri115714@gmail.com'")
+        if cursor.fetchone():
+            cursor.execute("UPDATE users SET username = 'Sindiri', password_hash = '$2b$10$g4izTwI0z7zsuhABJQ.ypeqy6MhtjQ5/gU1gYEaCFgJKORNmkVoKG', role = 'Admin' WHERE email = 'aryansindiri115714@gmail.com'")
+        else:
+            cursor.execute("""
+            INSERT INTO users (full_name, username, email, password_hash, phone, role, status)
+            VALUES ('Aryan Sindiri', 'Sindiri', 'aryansindiri115714@gmail.com', '$2b$10$g4izTwI0z7zsuhABJQ.ypeqy6MhtjQ5/gU1gYEaCFgJKORNmkVoKG', '7683904679', 'Admin', 'Active')
+            """)
+            
+    # Seed Aryan User (username: Aryan)
+    cursor.execute("SELECT user_id FROM users WHERE username = 'Aryan'")
+    if not cursor.fetchone():
+        cursor.execute("SELECT user_id FROM users WHERE email = 'aryansindiri9876@gmail.com'")
+        if cursor.fetchone():
+            cursor.execute("UPDATE users SET username = 'Aryan', password_hash = '$2b$10$aTvNsqJzjwPJSAD78.X0..IcBpwBejYABcSOd6v8XgZfxxvxSD0DK', role = 'Admin' WHERE email = 'aryansindiri9876@gmail.com'")
+        else:
+            cursor.execute("""
+            INSERT INTO users (full_name, username, email, password_hash, phone, role, status)
+            VALUES ('Sindiri', 'Aryan', 'aryansindiri9876@gmail.com', '$2b$10$aTvNsqJzjwPJSAD78.X0..IcBpwBejYABcSOd6v8XgZfxxvxSD0DK', '9861395454', 'Admin', 'Active')
+            """)
     # Seed initial application settings
     cursor.execute("SELECT setting_id FROM application_settings")
     if not cursor.fetchone():
