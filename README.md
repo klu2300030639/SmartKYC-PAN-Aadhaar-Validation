@@ -31,6 +31,27 @@
 
 ---
 
+## 🧮 Validation Algorithms & Logic
+
+SmartKYC performs completely offline, algorithmic validations to ensure document authenticity:
+
+### 1. Aadhaar Card Verification (Verhoeff Algorithm)
+Aadhaar numbers are 12-digit codes. The 12th digit is a checksum computed using the **Verhoeff Algorithm** (a dihedral group $D_5$ symmetry algorithm). 
+- It uses three matrix tables (Multiplication $d$, Permutation $p$, and Inverse $inv$).
+- It checks for single-digit transcription errors and adjacent transposition errors (e.g. typing `12` instead of `21`).
+- The check is computed iteratively over the string, and must result in `0` for valid cards.
+
+### 2. PAN Card Verification (Regular Expressions & Entities)
+Permanent Account Numbers (PAN) are 10-character alphanumeric strings validated against structured rules:
+- **Format Regex**: `^[A-Z]{5}[0-9]{4}[A-Z]{1}$`
+  - First 3 characters: Sequential alphabetical series (AAA to ZZZ)
+  - 4th character: Category of the cardholder (e.g., `P` for Individual, `C` for Company, `H` for HUF, `F` for Firm, etc.)
+  - 5th character: First letter of the cardholder's surname
+  - Next 4 characters: Sequential numbers (0001 to 9999)
+  - Last character: Alphabetic check digit
+
+---
+
 ## 💾 Zero-Config Database Architecture
 
 SmartKYC is equipped with a **transparent dual-driver database adapter** in [db.py](db.py):
@@ -62,7 +83,7 @@ pip install -r requirements.txt
 ```bash
 streamlit run streamlit_app.py
 ```
-*No database configuration is required! The application will automatically create a local `kyc_validator.db` file and seed a default administrator account. (Refer to database.sql for initial seeding).*
+*No database configuration is required! The application will automatically create a local `kyc_validator.db` file and seed a default administrator account. Please log in with your registered credentials (seeded in `database.sql`).*
 
 ---
 
