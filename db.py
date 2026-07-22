@@ -106,10 +106,18 @@ def init_sqlite_db(conn):
     # Seed default Admin User (username: ADMIN, password: ADMIN)
     cursor.execute("SELECT user_id FROM users WHERE username = 'ADMIN'")
     if not cursor.fetchone():
-        cursor.execute("""
-        INSERT INTO users (full_name, username, email, password_hash, phone, role, status)
-        VALUES ('System Administrator', 'ADMIN', 'admin@smartkyc.com', '$2b$10$aTdvtkOadKHMNjT5brkqmeOLF8CKLdYinhmzHd.XN9omRNklr2hva', '+1234567890', 'Admin', 'Active')
-        """)
+        cursor.execute("SELECT user_id FROM users WHERE username = 'admin'")
+        if cursor.fetchone():
+            cursor.execute("UPDATE users SET username = 'ADMIN', password_hash = '$2b$10$aTdvtkOadKHMNjT5brkqmeOLF8CKLdYinhmzHd.XN9omRNklr2hva' WHERE username = 'admin'")
+        else:
+            cursor.execute("SELECT user_id FROM users WHERE email = 'admin@smartkyc.com'")
+            if cursor.fetchone():
+                cursor.execute("UPDATE users SET username = 'ADMIN', password_hash = '$2b$10$aTdvtkOadKHMNjT5brkqmeOLF8CKLdYinhmzHd.XN9omRNklr2hva' WHERE email = 'admin@smartkyc.com'")
+            else:
+                cursor.execute("""
+                INSERT INTO users (full_name, username, email, password_hash, phone, role, status)
+                VALUES ('System Administrator', 'ADMIN', 'admin@smartkyc.com', '$2b$10$aTdvtkOadKHMNjT5brkqmeOLF8CKLdYinhmzHd.XN9omRNklr2hva', '+1234567890', 'Admin', 'Active')
+                """)
         
     # Seed initial application settings
     cursor.execute("SELECT setting_id FROM application_settings")
