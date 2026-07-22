@@ -98,6 +98,28 @@ def apply_custom_css():
         -webkit-text-fill-color: transparent;
         font-weight: 700;
     }
+    
+    /* Mobile / Android Chrome Responsive Optimizations */
+    @media (max-width: 768px) {
+        div[class*="stBorderedContainer"], .kyc-card {
+            padding: 16px !important;
+            margin-bottom: 12px !important;
+        }
+        .kpi-value {
+            font-size: 1.8rem !important;
+        }
+        /* Prevent viewport auto-zoom on focus on mobile/Android Chrome */
+        input, select, textarea {
+            font-size: 16px !important;
+        }
+        /* Maximize content utilization on narrow viewports */
+        .block-container {
+            padding-top: 1.5rem !important;
+            padding-bottom: 1.5rem !important;
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+    }
     </style>
     """
     st.markdown(css, unsafe_allow_html=True)
