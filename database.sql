@@ -65,10 +65,10 @@ INSERT INTO application_settings (setting_key, setting_value) VALUES
 ('validation_cleanup_days', '30'),
 ('max_failed_attempts', '5');
 
--- Seed Admin User (username: admin, password: admin123)
--- BCrypt Hash: $2a$10$c8hw293ufpUCB.FROSMyAOVRKGGmxdW62.3NoFWoy/ZIHipF8/2tq (standard BCrypt hash for admin123)
+-- Seed Admin User (username: ADMIN, password: ADMIN)
+-- BCrypt Hash: $2b$10$aTdvtkOadKHMNjT5brkqmeOLF8CKLdYinhmzHd.XN9omRNklr2hva (standard BCrypt hash for ADMIN)
 INSERT INTO users (full_name, username, email, password_hash, phone, role, status) VALUES
-('System Administrator', 'admin', 'admin@smartkyc.com', '$2a$10$c8hw293ufpUCB.FROSMyAOVRKGGmxdW62.3NoFWoy/ZIHipF8/2tq', '+1234567890', 'Admin', 'Active');
+('System Administrator', 'ADMIN', 'admin@smartkyc.com', '$2b$10$aTdvtkOadKHMNjT5brkqmeOLF8CKLdYinhmzHd.XN9omRNklr2hva', '+1234567890', 'Admin', 'Active');
 
 CREATE INDEX idx_users_username ON users(username);
 CREATE INDEX idx_validation_document ON validation_history(document_number);

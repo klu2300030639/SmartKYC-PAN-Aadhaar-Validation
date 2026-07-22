@@ -103,12 +103,12 @@ def init_sqlite_db(conn):
     )
     """)
     
-    # Seed default Admin User (username: admin, password: admin123)
-    cursor.execute("SELECT user_id FROM users WHERE username = 'admin'")
+    # Seed default Admin User (username: ADMIN, password: ADMIN)
+    cursor.execute("SELECT user_id FROM users WHERE username = 'ADMIN'")
     if not cursor.fetchone():
         cursor.execute("""
         INSERT INTO users (full_name, username, email, password_hash, phone, role, status)
-        VALUES ('System Administrator', 'admin', 'admin@smartkyc.com', '$2a$10$c8hw293ufpUCB.FROSMyAOVRKGGmxdW62.3NoFWoy/ZIHipF8/2tq', '+1234567890', 'Admin', 'Active')
+        VALUES ('System Administrator', 'ADMIN', 'admin@smartkyc.com', '$2b$10$aTdvtkOadKHMNjT5brkqmeOLF8CKLdYinhmzHd.XN9omRNklr2hva', '+1234567890', 'Admin', 'Active')
         """)
         
     # Seed initial application settings
