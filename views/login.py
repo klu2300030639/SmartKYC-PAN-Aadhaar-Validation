@@ -9,15 +9,11 @@ def show_login():
     st.markdown("""
     <div style="text-align: center; margin-bottom: 25px;">
         <div style="display: inline-block; margin-bottom: 15px;">
-            <svg width="70" height="70" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.6));">
-                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="url(#blue-grad)" />
-                <path d="M7.5 12L10.5 15L16.5 9" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <defs>
-                    <linearGradient id="blue-grad" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
-                        <stop stop-color="#60A5FA"/>
-                        <stop offset="1" stop-color="#2563EB"/>
-                    </linearGradient>
-                </defs>
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.95));">
+                <!-- Shield Outline -->
+                <path d="M12 2.5C12 2.5 5 5 5 6.5V11.5C5 16 12 19.5 12 19.5C12 19.5 19 16 19 11.5V6.5C19 5 12 2.5 12 2.5Z" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <!-- Checkmark -->
+                <path d="M9 11.5L11.5 14L18.5 7.5" stroke="#93c5fd" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
         </div>
         <h1 style="color: #3b82f6; font-size: 2.8rem; margin-bottom: 0; line-height: 1;">
