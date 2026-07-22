@@ -13,4 +13,4 @@ jobs:
       - name: Ping Streamlit App
         run: |
           # NOTE: If your Streamlit URL is different, please update this link accordingly!
-          curl -I https://smartkyc-pan-aadhaar-validation.streamlit.app/
+          curl -I https://smartkyc-validator.streamlit.app/
