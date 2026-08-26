@@ -3,9 +3,12 @@
   
   # 🛡️ SmartKYC — Identity Verification Web App
   
+  [![Version](https://img.shields.io/badge/Version-v2.0.0%20(MVC)-blue?style=for-the-badge)](https://github.com/klu2300030639/SmartKYC-PAN-Aadhaar-Validation)
+  [![Architecture](https://img.shields.io/badge/Architecture-FastAPI%20MVC-4f46e5?style=for-the-badge&logo=fastapi)](https://github.com/klu2300030639/SmartKYC-PAN-Aadhaar-Validation)
   [![Live App](https://img.shields.io/badge/Live-smartkyc--validator.streamlit.app-3b82f6?style=for-the-badge&logo=streamlit)](https://smartkyc-validator.streamlit.app/)
   [![GitHub License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
   [![Python](https://img.shields.io/badge/Python-3.9+-yellow?style=for-the-badge&logo=python)](https://python.org)
+
   
   **A premium, enterprise-grade identity document validation engine. Validates PAN & Aadhaar structures offline using mathematical integrity checks (such as the Verhoeff checksum algorithm).**
   
