@@ -17,31 +17,30 @@ def apply_custom_css():
     
     /* Core layout background override */
     .stApp {
-        background: #0f172a !important;
+        background: #0b0f17 !important;
         color: #f8fafc !important;
     }
     
-    /* Glassmorphic Cards */
+    /* Presentation Cards */
     .kyc-card, div[class*="stBorderedContainer"] {
-        background: rgba(30, 41, 59, 0.45) !important;
+        background: rgba(22, 31, 48, 0.75) !important;
         backdrop-filter: blur(16px) !important;
-        border: 1px solid rgba(51, 65, 85, 0.6) !important;
-        border-radius: 16px !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        border-radius: 14px !important;
         padding: 24px !important;
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2) !important;
+        box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.3) !important;
         margin-bottom: 20px !important;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        transition: all 0.2s ease !important;
     }
     .kyc-card:hover, div[class*="stBorderedContainer"]:hover {
-        transform: translateY(-2px) !important;
-        box-shadow: 0 10px 30px -10px rgba(59, 130, 246, 0.3) !important;
-        border-color: rgba(59, 130, 246, 0.5) !important;
+        border-color: rgba(255, 255, 255, 0.16) !important;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4) !important;
     }
     
     /* Sidebar Styling */
     section[data-testid="stSidebar"] {
-        background-color: #1e293b !important;
-        border-right: 1px solid #334155 !important;
+        background-color: #111827 !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
     }
     
     /* Active nav states */
@@ -53,32 +52,35 @@ def apply_custom_css():
     .kpi-value {
         font-size: 2.2rem !important;
         font-weight: 700 !important;
-        color: #3b82f6 !important;
+        color: #f8fafc !important;
         font-family: 'Outfit', sans-serif !important;
     }
     .kpi-label {
-        font-size: 0.9rem !important;
+        font-size: 0.85rem !important;
         color: #94a3b8 !important;
         font-weight: 500 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
     }
     
     /* Vibrant primary button overrides */
     .stButton>button {
-        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+        background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%) !important;
         color: #ffffff !important;
-        border: none !important;
-        border-radius: 10px !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        border-radius: 8px !important;
         padding: 10px 24px !important;
         font-weight: 600 !important;
-        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4) !important;
-        transition: all 0.2s ease-in-out !important;
+        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25) !important;
+        transition: all 0.15s ease !important;
         width: 100% !important;
     }
     .stButton>button:hover {
+        background: linear-gradient(180deg, #1d4ed8 0%, #1e40af 100%) !important;
+        box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35) !important;
         transform: translateY(-1px) !important;
-        box-shadow: 0 6px 22px rgba(59, 130, 246, 0.55) !important;
-        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
     }
+
     .stButton>button:active {
         transform: translateY(1px) !important;
     }
