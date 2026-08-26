@@ -61,13 +61,14 @@ SmartKYC is equipped with a **transparent dual-driver database adapter** in [db.
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Tech Stack & MVC Architecture
 
-- **Framework**: Streamlit (Python)
-- **Database Engine**: MySQL 8.0+ / SQLite 3
-- **Data & Charts**: Pandas, Plotly Express
-- **Security & Encription**: BCrypt, hashlib
-- **Keep-Alive Daemon**: GitHub Actions automated runner (runs every 30 minutes to prevent container sleep)
+- **MVC Framework**: FastAPI 0.110+ (Python Async) & Streamlit (Dual-Engine)
+- **Database & ORM**: SQLAlchemy 2.0+ / MySQL 8.0+ / SQLite 3
+- **Design & UI**: Executive Glassmorphic Dark Palette (Fintech Presentation Ready)
+- **Security & Hashing**: BCrypt, Session Cookies, Granular RBAC
+- **API Documentation**: Automated OpenAPI / Swagger UI at `/docs`
+- **Keep-Alive Daemon**: GitHub Actions automated runner (15-min interval health pings)
 
 ---
 
@@ -79,11 +80,18 @@ Make sure you have Python 3.9+ installed:
 pip install -r requirements.txt
 ```
 
-### 2. Run the App
+### 2. Run the Modern FastAPI MVC Server (Recommended)
+```bash
+python run_mvc.py
+```
+*Visit the live web app at **`http://localhost:8000`** or the interactive API docs at **`http://localhost:8000/docs`**.*
+
+### 3. Or Run the Streamlit Dashboard
 ```bash
 streamlit run streamlit_app.py
 ```
-*No database configuration is required! The application will automatically create a local `kyc_validator.db` file and seed a default administrator account. Please log in with your registered credentials (seeded in `database.sql`).*
+*No database configuration is required! The application will automatically create a local `kyc_validator.db` file and seed administrator accounts. Please log in with your registered credentials (seeded in `database.sql`).*
+
 
 ---
 

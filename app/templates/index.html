@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SmartKYC — Document Identity Verification</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <!-- 1. LOGIN VIEW -->
+    <div id="login-screen" style="display: none; width: 100%; min-height: 100vh; align-items: center; justify-content: center; padding: 24px;">
+        <div class="glass-card" style="max-width: 420px; width: 100%; text-align: center; padding: 36px 32px;">
+            
+            <!-- Executive Shield & Checkmark Emblem -->
+            <div style="display: inline-block; margin-bottom: 16px;">
+                <svg width="68" height="68" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="shield-icon">
+                    <path d="M12 2.5C12 2.5 5 5 5 6.5V11.5C5 16 12 19.5 12 19.5C12 19.5 19 16 19 11.5V6.5C19 5 12 2.5 12 2.5Z" stroke="#3b82f6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M9 11.5L11.5 14L18.5 7.5" stroke="#60a5fa" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </div>
+
+            <h1 style="font-size: 2rem; font-weight: 700; color: #f8fafc; margin-bottom: 4px;">SmartKYC</h1>
+            <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 28px;">Identity Verification System</p>
+
+            <form id="login-form">
+                <div class="form-group" style="text-align: left;">
+                    <label class="form-label">Username</label>
+                    <input type="text" id="login-username" class="form-control" placeholder="Username" required autocomplete="username">
+                </div>
+                <div class="form-group" style="text-align: left;">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="login-password" class="form-control" placeholder="Password" required autocomplete="current-password">
+                </div>
+                
+                <div id="login-error" style="display: none; background: rgba(244, 63, 94, 0.12); border: 1px solid rgba(244, 63, 94, 0.3); color: #fb7185; border-radius: 8px; padding: 10px; font-size: 0.85rem; margin-bottom: 16px;"></div>
+
+                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 8px;">
+                    <span>Sign In</span> ➔
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 2. AUTHENTICATED APP WORKSPACE -->
+    <div id="app-screen" class="app-container" style="display: none;">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="shield-icon">
+                    <path d="M12 2.5C12 2.5 5 5 5 6.5V11.5C5 16 12 19.5 12 19.5C12 19.5 19 16 19 11.5V6.5C19 5 12 2.5 12 2.5Z" stroke="#3b82f6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M9 11.5L11.5 14L18.5 7.5" stroke="#60a5fa" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <div>
+                    <h2 style="font-size: 1.25rem; font-weight: 700; line-height: 1.1;">SmartKYC</h2>
+                    <span style="font-size: 0.75rem; color: #64748b; font-weight: 500;">MVC Architecture</span>
+                </div>
+            </div>
+
+            <!-- Profile Summary -->
+            <div style="background: rgba(11, 15, 23, 0.6); border-radius: 8px; padding: 12px; margin-bottom: 16px; border: 1px solid var(--border-subtle);">
+                <div style="font-size: 0.75rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em;">Authenticated User</div>
+                <div id="user-display-name" style="font-weight: 600; color: #f8fafc; font-size: 0.9rem; margin-top: 2px;">User</div>
+                <span id="user-display-role" class="badge badge-role" style="margin-top: 4px;">Role</span>
+            </div>
+
+            <!-- Nav Links -->
+            <ul class="nav-list">
+                <li id="nav-dashboard" class="nav-item active" onclick="switchTab('dashboard')">
+                    <span>📊</span> <span>Dashboard</span>
+                </li>
+                <li id="nav-validate" class="nav-item" onclick="switchTab('validate')">
+                    <span>🔍</span> <span>Verify KYC</span>
+                </li>
+                <li id="nav-history" class="nav-item admin-only" onclick="switchTab('history')">
+                    <span>⏳</span> <span>KYC History</span>
+                </li>
+                <li id="nav-users" class="nav-item admin-only" onclick="switchTab('users')">
+                    <span>👥</span> <span>User Directory</span>
+                </li>
+                <li id="nav-audit" class="nav-item admin-only" onclick="switchTab('audit')">
+                    <span>🛡️</span> <span>Audit Logs</span>
+                </li>
+            </ul>
+
+            <!-- Logout Action -->
+            <div class="sidebar-footer">
+                <button id="logout-btn" class="btn-secondary" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <span>🚪</span> <span>Sign Out</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Workspace Area -->
+        <main class="main-content">
+            <button id="mobile-toggle" class="mobile-menu-btn">☰ Navigation Menu</button>
+
+            <!-- VIEW 1: DASHBOARD -->
+            <div id="tab-dashboard" class="tab-pane">
+                <div style="margin-bottom: 24px;">
+                    <h2 style="font-size: 1.6rem; font-weight: 700;">System Overview</h2>
+                    <p style="color: #94a3b8; font-size: 0.9rem;">Real-time validation throughput and verification distribution metrics.</p>
+                </div>
+
+                <!-- KPI Metric Grid -->
+                <div class="kpi-grid">
+                    <div class="glass-card">
+                        <div class="kpi-label">Total Verifications</div>
+                        <div id="kpi-total" class="kpi-value">0</div>
+                    </div>
+                    <div class="glass-card">
+                        <div class="kpi-label">Valid Documents</div>
+                        <div id="kpi-valid" class="kpi-value" style="color: #34d399;">0</div>
+                    </div>
+                    <div class="glass-card">
+                        <div class="kpi-label">Invalid Checks</div>
+                        <div id="kpi-invalid" class="kpi-value" style="color: #fb7185;">0</div>
+                    </div>
+                    <div class="glass-card">
+                        <div class="kpi-label">Success Rate</div>
+                        <div id="kpi-rate" class="kpi-value" style="color: #60a5fa;">0.0%</div>
+                    </div>
+                </div>
+
+                <!-- Chart & Activity Log -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
+                    <div class="glass-card" style="height: 340px;">
+                        <h3 style="margin-bottom: 16px; font-size: 1rem; color: #e2e8f0;">Verification Distribution</h3>
+                        <div style="height: 240px; position: relative;">
+                            <canvas id="distributionChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="glass-card" style="min-height: 340px; overflow-x: auto;">
+                        <h3 style="margin-bottom: 12px; font-size: 1rem; color: #e2e8f0;">Recent Activity Log</h3>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Document</th>
+                                    <th>Number</th>
+                                    <th>Status</th>
+                                    <th>Time</th>
+                                    <th>User</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW 2: VERIFY KYC -->
+            <div id="tab-validate" class="tab-pane" style="display: none;">
+                <div style="margin-bottom: 24px;">
+                    <h2 style="font-size: 1.6rem; font-weight: 700;">Document Verification</h2>
+                    <p style="color: #94a3b8; font-size: 0.9rem;">Offline algorithmic integrity checks for PAN and Aadhaar identity cards.</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
+                    
+                    <!-- PAN Card Panel -->
+                    <div class="glass-card">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                            <span style="font-size: 1.6rem;">💳</span>
+                            <div>
+                                <h3 style="font-size: 1.1rem; margin: 0;">PAN Card Validator</h3>
+                                <span style="color: #64748b; font-size: 0.8rem;">Income Tax Format & Entity Checks</span>
+                            </div>
+                        </div>
+
+                        <form id="pan-form">
+                            <div class="form-group">
+                                <label class="form-label">PAN Number (10 Characters)</label>
+                                <input type="text" id="pan-input" class="form-control" placeholder="e.g. ABCPC1234F" maxlength="10" required style="text-transform: uppercase;">
+                            </div>
+                            <button type="submit" class="btn-primary" style="width: 100%;">Verify PAN Document</button>
+                        </form>
+
+                        <div id="pan-result" style="margin-top: 20px; display: none;"></div>
+                    </div>
+
+                    <!-- Aadhaar Card Panel -->
+                    <div class="glass-card">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                            <span style="font-size: 1.6rem;">🆔</span>
+                            <div>
+                                <h3 style="font-size: 1.1rem; margin: 0;">Aadhaar UID Validator</h3>
+                                <span style="color: #64748b; font-size: 0.8rem;">Verhoeff Dihedral Group D5</span>
+                            </div>
+                        </div>
+
+                        <form id="aadhaar-form">
+                            <div class="form-group">
+                                <label class="form-label">Aadhaar Number (12 Digits)</label>
+                                <input type="text" id="aadhaar-input" class="form-control" placeholder="e.g. 2000 0000 0003" maxlength="14" required>
+                            </div>
+                            <button type="submit" class="btn-primary" style="width: 100%;">Verify Verhoeff Checksum</button>
+                        </form>
+
+                        <div id="aadhaar-result" style="margin-top: 20px; display: none;"></div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- VIEW 3: KYC HISTORY (Admin) -->
+            <div id="tab-history" class="tab-pane" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+                    <div>
+                        <h2 style="font-size: 1.6rem; font-weight: 700;">Validation History</h2>
+                        <p style="color: #94a3b8; font-size: 0.9rem;">Historical registry of all verified documents.</p>
+                    </div>
+                    <a href="/api/history/export" class="btn-secondary" style="text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                        <span>📥</span> <span>Export CSV</span>
+                    </a>
+                </div>
+
+                <div class="glass-card" style="margin-bottom: 20px; display: flex; gap: 12px; flex-wrap: wrap;">
+                    <input type="text" id="history-search" class="form-control" placeholder="Search document number..." style="flex: 2; min-width: 200px;" oninput="loadHistory()">
+                    <select id="history-type" class="form-control" style="flex: 1; min-width: 140px;" onchange="loadHistory()">
+                        <option value="">All Document Types</option>
+                        <option value="PAN">PAN</option>
+                        <option value="Aadhaar">Aadhaar</option>
+                    </select>
+                    <select id="history-status" class="form-control" style="flex: 1; min-width: 140px;" onchange="loadHistory()">
+                        <option value="">All Statuses</option>
+                        <option value="VALID">VALID</option>
+                        <option value="INVALID">INVALID</option>
+                    </select>
+                </div>
+
+                <div class="glass-card" style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Type</th>
+                                <th>Document Number</th>
+                                <th>Status</th>
+                                <th>Validation Details</th>
+                                <th>Timestamp</th>
+                                <th>User</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- VIEW 4: USER DIRECTORY (Admin) -->
+            <div id="tab-users" class="tab-pane" style="display: none;">
+                <div style="margin-bottom: 24px;">
+                    <h2 style="font-size: 1.6rem; font-weight: 700;">User Directory</h2>
+                    <p style="color: #94a3b8; font-size: 0.9rem;">Account administration and role-based access management.</p>
+                </div>
+
+                <!-- Create User Card -->
+                <div class="glass-card" style="margin-bottom: 24px;">
+                    <h3 style="font-size: 1rem; margin-bottom: 16px; color: #e2e8f0;">➕ Provision New Account</h3>
+                    <form id="create-user-form" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px;">
+                        <input type="text" id="new-user-fullname" class="form-control" placeholder="Full Name" required>
+                        <input type="text" id="new-user-username" class="form-control" placeholder="Username" required>
+                        <input type="email" id="new-user-email" class="form-control" placeholder="Email Address" required>
+                        <input type="text" id="new-user-phone" class="form-control" placeholder="Phone Number">
+                        <select id="new-user-role" class="form-control">
+                            <option value="User">User</option>
+                            <option value="Admin">Admin</option>
+                        </select>
+                        <input type="password" id="new-user-password" class="form-control" placeholder="Password" required>
+                        <button type="submit" class="btn-primary" style="grid-column: 1 / -1; justify-self: start;">Create Account</button>
+                    </form>
+                </div>
+
+                <!-- Users Table -->
+                <div class="glass-card" style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- VIEW 5: AUDIT LOGS (Admin) -->
+            <div id="tab-audit" class="tab-pane" style="display: none;">
+                <div style="margin-bottom: 24px;">
+                    <h2 style="font-size: 1.6rem; font-weight: 700;">Security Audit Logs</h2>
+                    <p style="color: #94a3b8; font-size: 0.9rem;">Comprehensive system audit trails and authentication activity.</p>
+                </div>
+
+                <div class="glass-card" style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Log ID</th>
+                                <th>Action</th>
+                                <th>Module</th>
+                                <th>Description</th>
+                                <th>Timestamp</th>
+                                <th>User</th>
+                            </tr>
+                        </thead>
+                        <tbody id="audit-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
