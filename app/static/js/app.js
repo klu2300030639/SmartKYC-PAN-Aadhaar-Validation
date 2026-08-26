@@ -1,11 +1,45 @@
-// SmartKYC Frontend Controller & State Manager
+/**
+ * SmartKYC Enterprise Client-Side MVC Controller & State Engine
+ * Handles session tokens, reactive DOM rendering, debounce filtering, and toast notifications.
+ */
+
 let currentUser = null;
 let distChart = null;
+let historyDebounceTimer = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
     await checkAuth();
     setupEventListeners();
+    setupInputFormatters();
 });
+
+// --- Toast Notification Engine ---
+function showToast(type, message) {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+    
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    
+    let iconSvg = '';
+    if (type === 'success') {
+        iconSvg = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>`;
+    } else if (type === 'error') {
+        iconSvg = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`;
+    } else {
+        iconSvg = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`;
+    }
+    
+    toast.innerHTML = `${iconSvg} <span>${message}</span>`;
+    container.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(20px)';
+        setTimeout(() => toast.remove(), 300);
+    }, 4000);
+}
 
 // --- Auth State & Session Check ---
 async function checkAuth() {
@@ -31,11 +65,9 @@ function renderAuthenticatedApp() {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app-screen').style.display = 'flex';
     
-    // Update user info banner
     document.getElementById('user-display-name').textContent = currentUser.full_name || currentUser.username;
     document.getElementById('user-display-role').textContent = currentUser.role;
     
-    // RBAC: Show/hide Admin items
     const adminNavs = document.querySelectorAll('.admin-only');
     adminNavs.forEach(el => {
         el.style.display = (currentUser.role === 'Admin') ? 'flex' : 'none';
@@ -55,13 +87,33 @@ function switchTab(tabName) {
     if (targetPane) targetPane.style.display = 'block';
     if (targetNav) targetNav.classList.add('active');
     
-    // Close mobile sidebar on navigation
-    document.querySelector('.sidebar').classList.remove('open');
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) sidebar.classList.remove('open');
     
     if (tabName === 'dashboard') loadDashboard();
     if (tabName === 'history') loadHistory();
     if (tabName === 'users') loadUsers();
     if (tabName === 'audit') loadAuditLogs();
+}
+
+// --- Live Input Formatters ---
+function setupInputFormatters() {
+    const aadhaarInput = document.getElementById('aadhaar-input');
+    if (aadhaarInput) {
+        aadhaarInput.addEventListener('input', (e) => {
+            let val = e.target.value.replace(/\D/g, '');
+            if (val.length > 12) val = val.substring(0, 12);
+            const chunks = val.match(/.{1,4}/g);
+            e.target.value = chunks ? chunks.join(' ') : val;
+        });
+    }
+
+    const panInput = document.getElementById('pan-input');
+    if (panInput) {
+        panInput.addEventListener('input', (e) => {
+            e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+        });
+    }
 }
 
 // --- Event Listeners Setup ---
@@ -85,14 +137,15 @@ function setupEventListeners() {
                 
                 if (res.ok) {
                     currentUser = await res.json();
+                    showToast('success', `Authenticated as ${currentUser.username}`);
                     renderAuthenticatedApp();
                 } else {
                     const data = await res.json();
-                    errorBox.textContent = data.detail || 'Invalid username or password.';
+                    errorBox.textContent = data.detail || 'Invalid credentials.';
                     errorBox.style.display = 'block';
                 }
             } catch (err) {
-                errorBox.textContent = 'Connection error. Please try again.';
+                errorBox.textContent = 'Service unavailable. Please retry.';
                 errorBox.style.display = 'block';
             }
         });
@@ -104,11 +157,12 @@ function setupEventListeners() {
         logoutBtn.addEventListener('click', async () => {
             await fetch('/api/auth/logout', { method: 'POST' });
             currentUser = null;
+            showToast('info', 'Signed out of session');
             renderLoginScreen();
         });
     }
     
-    // PAN Validation Form
+    // PAN Form
     const panForm = document.getElementById('pan-form');
     if (panForm) {
         panForm.addEventListener('submit', async (e) => {
@@ -116,20 +170,22 @@ function setupEventListeners() {
             const panNumber = document.getElementById('pan-input').value.trim();
             const resultBox = document.getElementById('pan-result');
             
-            resultBox.innerHTML = `<div style="color: #94a3b8;">Verifying PAN format...</div>`;
+            resultBox.innerHTML = `<div style="color: #64748b; font-size: 0.85rem;">Processing format validation...</div>`;
             resultBox.style.display = 'block';
             
+            const startTime = performance.now();
             const res = await fetch('/api/validate/pan', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ pan_number: panNumber })
             });
+            const latency = (performance.now() - startTime).toFixed(1);
             const data = await res.json();
-            renderValidationResult(resultBox, data, 'PAN');
+            renderValidationResult(resultBox, data, 'PAN', latency);
         });
     }
     
-    // Aadhaar Validation Form
+    // Aadhaar Form
     const aadhaarForm = document.getElementById('aadhaar-form');
     if (aadhaarForm) {
         aadhaarForm.addEventListener('submit', async (e) => {
@@ -137,29 +193,31 @@ function setupEventListeners() {
             const aadhaarNumber = document.getElementById('aadhaar-input').value.trim();
             const resultBox = document.getElementById('aadhaar-result');
             
-            resultBox.innerHTML = `<div style="color: #94a3b8;">Calculating Verhoeff checksum...</div>`;
+            resultBox.innerHTML = `<div style="color: #64748b; font-size: 0.85rem;">Calculating Dihedral Group matrix...</div>`;
             resultBox.style.display = 'block';
             
+            const startTime = performance.now();
             const res = await fetch('/api/validate/aadhaar', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ aadhaar_number: aadhaarNumber })
             });
+            const latency = (performance.now() - startTime).toFixed(1);
             const data = await res.json();
-            renderValidationResult(resultBox, data, 'Aadhaar');
+            renderValidationResult(resultBox, data, 'Aadhaar', latency);
         });
     }
     
-    // Create User Form (Admin)
+    // Create User Form
     const createUserForm = document.getElementById('create-user-form');
     if (createUserForm) {
         createUserForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const payload = {
-                full_name: document.getElementById('new-user-fullname').value,
-                username: document.getElementById('new-user-username').value,
-                email: document.getElementById('new-user-email').value,
-                phone: document.getElementById('new-user-phone').value,
+                full_name: document.getElementById('new-user-fullname').value.trim(),
+                username: document.getElementById('new-user-username').value.trim(),
+                email: document.getElementById('new-user-email').value.trim(),
+                phone: document.getElementById('new-user-phone').value.trim() || null,
                 role: document.getElementById('new-user-role').value,
                 password: document.getElementById('new-user-password').value
             };
@@ -171,15 +229,30 @@ function setupEventListeners() {
             });
             
             if (res.ok) {
-                alert('User created successfully!');
+                showToast('success', `Operator account '${payload.username}' provisioned.`);
                 createUserForm.reset();
                 loadUsers();
             } else {
                 const err = await res.json();
-                alert(err.detail || 'Failed to create user.');
+                showToast('error', err.detail || 'Failed to create account.');
             }
         });
     }
+
+    // Debounced History Search
+    const searchInput = document.getElementById('history-search');
+    if (searchInput) {
+        searchInput.addEventListener('input', () => {
+            clearTimeout(historyDebounceTimer);
+            historyDebounceTimer = setTimeout(loadHistory, 250);
+        });
+    }
+    
+    const typeSelect = document.getElementById('history-type');
+    if (typeSelect) typeSelect.addEventListener('change', loadHistory);
+
+    const statusSelect = document.getElementById('history-status');
+    if (statusSelect) statusSelect.addEventListener('change', loadHistory);
     
     // Mobile Sidebar Toggle
     const toggleBtn = document.getElementById('mobile-toggle');
@@ -191,51 +264,86 @@ function setupEventListeners() {
 }
 
 // --- Render Validation Results ---
-function renderValidationResult(container, data, type) {
+function renderValidationResult(container, data, type, latency) {
     if (data.valid) {
-        let detailsHtml = '';
+        let specHtml = '';
         if (data.details) {
             if (type === 'PAN') {
-                detailsHtml = `
-                    <div style="margin-top: 10px; font-size: 0.88rem; color: #cbd5e1;">
-                        <div>• <b>Entity Category:</b> ${data.details.entity_type} (Code: ${data.details.entity_code})</div>
-                        <div>• <b>Surname Initial:</b> ${data.details.surname_initial}</div>
+                specHtml = `
+                    <div class="spec-grid">
+                        <div class="spec-item">
+                            <div class="spec-key">Entity Category</div>
+                            <div class="spec-val">${data.details.entity_type} (${data.details.entity_code})</div>
+                        </div>
+                        <div class="spec-item">
+                            <div class="spec-key">Surname Marker</div>
+                            <div class="spec-val font-mono">${data.details.surname_initial}</div>
+                        </div>
+                        <div class="spec-item">
+                            <div class="spec-key">Protocol</div>
+                            <div class="spec-val font-mono">ITD-Sec 139A</div>
+                        </div>
+                        <div class="spec-item">
+                            <div class="spec-key">Verification Latency</div>
+                            <div class="spec-val font-mono">${latency} ms</div>
+                        </div>
                     </div>
                 `;
             } else if (type === 'Aadhaar') {
-                detailsHtml = `
-                    <div style="margin-top: 10px; font-size: 0.88rem; color: #cbd5e1;">
-                        <div>• <b>Formatted UID:</b> <code>${data.details.formatted}</code></div>
-                        <div>• <b>Algorithm:</b> ${data.details.algorithm} (Passed)</div>
+                specHtml = `
+                    <div class="spec-grid">
+                        <div class="spec-item">
+                            <div class="spec-key">Formatted UID</div>
+                            <div class="spec-val font-mono">${data.details.formatted}</div>
+                        </div>
+                        <div class="spec-item">
+                            <div class="spec-key">Algorithm</div>
+                            <div class="spec-val">Verhoeff D5 Checksum</div>
+                        </div>
+                        <div class="spec-item">
+                            <div class="spec-key">Standard</div>
+                            <div class="spec-val font-mono">ISO/IEC 7064</div>
+                        </div>
+                        <div class="spec-item">
+                            <div class="spec-key">Verification Latency</div>
+                            <div class="spec-val font-mono">${latency} ms</div>
+                        </div>
                     </div>
                 `;
             }
         }
         
         container.innerHTML = `
-            <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 10px; padding: 16px;">
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <span style="color: #34d399; font-size: 1.1rem;">✓</span>
-                    <strong style="color: #34d399; font-size: 1rem;">VALID ${type} DOCUMENT</strong>
+            <div style="background: rgba(16, 185, 129, 0.06); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 8px; padding: 16px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        <strong style="color: #34d399; font-size: 0.95rem;">VERIFIED ${type} DOCUMENT</strong>
+                    </div>
+                    <span class="badge badge-valid">200 VALID</span>
                 </div>
-                <p style="margin-top: 6px; color: #e2e8f0; font-size: 0.9rem;">${data.reason}</p>
-                ${detailsHtml}
+                <p style="margin-top: 6px; color: #94a3b8; font-size: 0.85rem;">${data.reason}</p>
+                ${specHtml}
             </div>
         `;
     } else {
         container.innerHTML = `
-            <div style="background: rgba(244, 63, 94, 0.08); border: 1px solid rgba(244, 63, 94, 0.3); border-radius: 10px; padding: 16px;">
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <span style="color: #fb7185; font-size: 1.1rem;">✕</span>
-                    <strong style="color: #fb7185; font-size: 1rem;">INVALID ${type} DOCUMENT</strong>
+            <div style="background: rgba(244, 63, 94, 0.06); border: 1px solid rgba(244, 63, 94, 0.25); border-radius: 8px; padding: 16px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fb7185" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                        <strong style="color: #fb7185; font-size: 0.95rem;">REJECTED ${type} DOCUMENT</strong>
+                    </div>
+                    <span class="badge badge-invalid">422 INVALID</span>
                 </div>
-                <p style="margin-top: 6px; color: #fecdd3; font-size: 0.9rem;">${data.reason}</p>
+                <p style="margin-top: 6px; color: #fecdd3; font-size: 0.85rem;">${data.reason}</p>
+                <div style="margin-top: 8px; font-size: 0.75rem; color: #64748b; font-family: 'JetBrains Mono', monospace;">Processed in ${latency} ms</div>
             </div>
         `;
     }
 }
 
-// --- Load Dashboard Data ---
+// --- Load Dashboard Telemetry ---
 async function loadDashboard() {
     try {
         const res = await fetch('/api/dashboard/stats');
@@ -247,22 +355,25 @@ async function loadDashboard() {
         document.getElementById('kpi-invalid').textContent = stats.invalid_count;
         document.getElementById('kpi-rate').textContent = `${stats.success_rate}%`;
         
-        // Render Chart
         renderDistributionChart(stats.valid_count, stats.invalid_count);
         
-        // Render Recent Table
         const tbody = document.getElementById('recent-table-body');
         tbody.innerHTML = '';
+        if (stats.recent_validations.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #64748b; padding: 20px;">No validations recorded yet.</td></tr>`;
+            return;
+        }
+        
         stats.recent_validations.forEach(r => {
             const tr = document.createElement('tr');
             const badgeClass = (r.status === 'VALID') ? 'badge-valid' : 'badge-invalid';
-            const dateStr = new Date(r.validated_at).toLocaleString();
+            const dateStr = new Date(r.validated_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
             tr.innerHTML = `
-                <td><strong>${r.document_type}</strong></td>
-                <td><code>${r.document_number}</code></td>
+                <td><span style="font-weight: 600; color: #f8fafc;">${r.document_type}</span></td>
+                <td><code class="font-mono">${r.document_number}</code></td>
                 <td><span class="badge ${badgeClass}">${r.status}</span></td>
-                <td style="color: #64748b; font-size: 0.85rem;">${dateStr}</td>
-                <td>${r.validated_by || 'System'}</td>
+                <td style="color: #64748b; font-size: 0.82rem;" class="font-mono">${dateStr}</td>
+                <td><span style="color: #94a3b8; font-size: 0.85rem;">${r.validated_by || 'System'}</span></td>
             `;
             tbody.appendChild(tr);
         });
@@ -280,26 +391,35 @@ function renderDistributionChart(valid, invalid) {
     distChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: ['Valid Documents', 'Invalid Checks'],
+            labels: ['Verified Valid', 'Integrity Failures'],
             datasets: [{
                 data: [valid, invalid],
                 backgroundColor: ['#10b981', '#f43f5e'],
-                borderColor: '#111827',
-                borderWidth: 2
+                borderColor: '#131b2e',
+                borderWidth: 3,
+                hoverOffset: 4
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: { position: 'bottom', labels: { color: '#94a3b8', font: { family: 'Inter', size: 12 } } }
-            }
+                legend: { 
+                    position: 'bottom', 
+                    labels: { 
+                        color: '#94a3b8', 
+                        font: { family: 'Inter', size: 11, weight: '500' },
+                        boxWidth: 10,
+                        padding: 14
+                    } 
+                }
+            },
+            cutout: '70%'
         }
     });
 }
 
-
-// --- Load History Data ---
+// --- Load History Registry ---
 async function loadHistory() {
     const search = document.getElementById('history-search')?.value || '';
     const docType = document.getElementById('history-type')?.value || '';
@@ -316,23 +436,29 @@ async function loadHistory() {
     
     const tbody = document.getElementById('history-table-body');
     tbody.innerHTML = '';
+    
+    if (records.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #64748b; padding: 24px;">No matching records found in audit ledger.</td></tr>`;
+        return;
+    }
+    
     records.forEach(r => {
         const tr = document.createElement('tr');
         const badgeClass = (r.status === 'VALID') ? 'badge-valid' : 'badge-invalid';
         tr.innerHTML = `
-            <td>#${r.validation_id}</td>
+            <td class="font-mono" style="color: #64748b;">#${r.validation_id}</td>
             <td><strong>${r.document_type}</strong></td>
-            <td><code>${r.document_number}</code></td>
+            <td><code class="font-mono">${r.document_number}</code></td>
             <td><span class="badge ${badgeClass}">${r.status}</span></td>
-            <td style="color: #cbd5e1; font-size: 0.85rem;">${r.failure_reason || '—'}</td>
-            <td style="color: #94a3b8; font-size: 0.85rem;">${new Date(r.validated_at).toLocaleString()}</td>
-            <td>${r.validated_by}</td>
+            <td style="color: #94a3b8; font-size: 0.82rem;">${r.reason || 'Verification passed'}</td>
+            <td style="color: #64748b; font-size: 0.8rem;" class="font-mono">${new Date(r.validated_at).toLocaleString()}</td>
+            <td style="color: #94a3b8;">${r.validated_by}</td>
         `;
         tbody.appendChild(tr);
     });
 }
 
-// --- Load Users (Admin) ---
+// --- Load Users Directory ---
 async function loadUsers() {
     const res = await fetch('/api/users');
     if (!res.ok) return;
@@ -340,18 +466,19 @@ async function loadUsers() {
     
     const tbody = document.getElementById('users-table-body');
     tbody.innerHTML = '';
+    
     users.forEach(u => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td><strong>${u.username}</strong></td>
+            <td><span class="font-mono" style="font-weight: 600; color: #f8fafc;">${u.username}</span></td>
             <td>${u.full_name}</td>
-            <td>${u.email}</td>
+            <td style="color: #94a3b8;">${u.email}</td>
             <td><span class="badge badge-role">${u.role}</span></td>
-            <td><span style="color: #34d399;">🟢 ${u.status}</span></td>
+            <td><span class="badge badge-valid">${u.status}</span></td>
             <td>
                 ${u.user_id !== currentUser.user_id ? 
-                    `<button class="btn-danger" onclick="deleteUserAccount(${u.user_id}, '${u.username}')">Delete</button>` 
-                    : '<span style="color: #94a3b8; font-size: 0.85rem;">(Active Admin)</span>'}
+                    `<button class="btn-danger" onclick="deleteUserAccount(${u.user_id}, '${u.username}')">Revoke</button>` 
+                    : '<span style="color: #64748b; font-size: 0.78rem;">(Active)</span>'}
             </td>
         `;
         tbody.appendChild(tr);
@@ -359,19 +486,19 @@ async function loadUsers() {
 }
 
 async function deleteUserAccount(userId, username) {
-    if (!confirm(`Are you sure you want to permanently delete user '${username}'?`)) return;
+    if (!confirm(`Confirm revocation of operator account '${username}'?`)) return;
     
     const res = await fetch(`/api/users/${userId}`, { method: 'DELETE' });
     if (res.ok) {
-        alert(`User '${username}' deleted.`);
+        showToast('success', `Account '${username}' revoked.`);
         loadUsers();
     } else {
         const err = await res.json();
-        alert(err.detail || 'Delete failed.');
+        showToast('error', err.detail || 'Operation failed.');
     }
 }
 
-// --- Load Audit Logs (Admin) ---
+// --- Load Security Audit Logs ---
 async function loadAuditLogs() {
     const res = await fetch('/api/audit?limit=100');
     if (!res.ok) return;
@@ -379,15 +506,21 @@ async function loadAuditLogs() {
     
     const tbody = document.getElementById('audit-table-body');
     tbody.innerHTML = '';
+    
+    if (logs.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #64748b; padding: 24px;">No security events recorded.</td></tr>`;
+        return;
+    }
+    
     logs.forEach(l => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td>#${l.log_id}</td>
-            <td><code>${l.action}</code></td>
+            <td class="font-mono" style="color: #64748b;">#${l.log_id}</td>
+            <td><code class="font-mono" style="color: #60a5fa; font-size: 0.8rem;">${l.action}</code></td>
             <td><span class="badge badge-role">${l.module}</span></td>
-            <td style="color: #e2e8f0; font-size: 0.9rem;">${l.description || '—'}</td>
-            <td style="color: #94a3b8; font-size: 0.85rem;">${new Date(l.timestamp).toLocaleString()}</td>
-            <td><strong>${l.performed_by}</strong></td>
+            <td style="color: #cbd5e1; font-size: 0.84rem;">${l.description || '—'}</td>
+            <td style="color: #64748b; font-size: 0.8rem;" class="font-mono">${new Date(l.created_at).toLocaleString()}</td>
+            <td><strong style="color: #f8fafc; font-size: 0.85rem;">${l.performed_by}</strong></td>
         `;
         tbody.appendChild(tr);
     });
