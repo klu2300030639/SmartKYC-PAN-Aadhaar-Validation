@@ -71,7 +71,8 @@ SmartKYC is equipped with a **transparent dual-driver database adapter** in [db.
 - **Design & UI**: Executive Glassmorphic Dark Palette (Fintech Presentation Ready)
 - **Security & Hashing**: BCrypt, Session Cookies, Granular RBAC
 - **API Documentation**: Automated OpenAPI / Swagger UI at `/docs`
-- **Keep-Alive Daemon**: GitHub Actions automated runner (15-min interval health pings)
+- **Deployment & Hosting**: Streamlit Community Cloud (On-Demand Visitor Activation) & ASGI
+
 
 ---
 
