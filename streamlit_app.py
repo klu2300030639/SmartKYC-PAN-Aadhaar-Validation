@@ -79,5 +79,13 @@ else:
 
 
 # Inject Global Styling Custom CSS and Execute Page
-apply_custom_css()
-pg.run()
+try:
+    apply_custom_css()
+    pg.run()
+except Exception as e:
+    st.error(f"Application recovered from unexpected state: {e}")
+    if st.button("Reload Session", key="recovery_reload_btn"):
+        for key in list(st.session_state.keys()):
+            del st.session_state[key]
+        st.rerun()
+
